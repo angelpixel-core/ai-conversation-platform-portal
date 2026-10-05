@@ -12,7 +12,7 @@ El roadmap mantiene una **paridad estricta 1:1** con los 10 pasos demostrados en
 | ID | Documento de Especificación | Caso de Uso | Step Backend Walkthrough | Slice Backend | Endpoints Clave | Estado |
 | :--- | :--- | :--- | :--- | :--- | :--- | :---: |
 | **01** | [`01-cu-01-system-health.md`](file:///Users/angel.szymczak/Vaults/Harvis/300-MEMORIA_DIGITAL/475-Sites/AngelSolutions/Company/platform/convo/chatbot-ai-rag-langchain/apps/chatbot/web/portal/docs/roadmap/01-cu-01-system-health.md) | **CU-01: Monitor de Salud y Disponibilidad** | Step 1: Health & Docs | Base Hexagonal | `GET /health` | 🟡 Especificado |
-| **02** | `02-cu-02-tenant-isolation.md` | **CU-02: Selector de Tenant y Aislamiento** | Step 2: Multi-Tenancy | Slice 6 | `GET /admin/tenants`, Header `X-Tenant-Id` | ⚪ Pendiente |
+| **02** | [`02-cu-02-tenant-isolation.md`](file:///Users/angel.szymczak/Vaults/Harvis/300-MEMORIA_DIGITAL/475-Sites/AngelSolutions/Company/platform/convo/chatbot-ai-rag-langchain/apps/chatbot/web/portal/docs/roadmap/02-cu-02-tenant-isolation.md) | **CU-02: Selector de Tenant y Aislamiento** | Step 2: Multi-Tenancy | Slice 6 | `GET /admin/tenants`, Header `X-Tenant-Id` | 🟡 Especificado |
 | **03** | `03-cu-03-chat-idempotency.md` | **CU-03: Consola Conversacional e Idempotencia** | Step 3: Idempotency | Slices 1, 2, 5 | `POST /conversations`, `POST .../messages` | ⚪ Pendiente |
 | **04** | `04-cu-04-outbox-worker-monitor.md` | **CU-04: Monitor de Despacho Asíncrono Outbox** | Step 6: Decoupled Worker | Slice 4 | RabbitMQ/Outbox Domain Events | ⚪ Pendiente |
 | **05** | `05-cu-05-governance-budget.md` | **CU-05: Dashboard de Cuotas y Presupuestos** | Step 5: Tenant Governance | Slice 6 | `/admin/tenants/{id}/budget`, `/policy`, `/reserve` | ⚪ Pendiente |
