@@ -1,10 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { DashboardHeader } from '@/presentation/layouts/DashboardHeader';
 import { useTenant } from '@/application/tenants/TenantContext';
 import { TenantTierBadge } from '@/presentation/components/tenants/TenantTierBadge';
 import { TenantAvatar } from '@/presentation/components/tenants/TenantAvatar';
+import { ChatConsole } from '@/presentation/components/chat/ChatConsole';
 import {
   Activity,
   MessageSquare,
@@ -21,6 +22,7 @@ import {
   CheckCircle2,
   Clock,
   ShieldAlert,
+  Terminal,
 } from 'lucide-react';
 
 interface ModuleCardProps {
@@ -31,7 +33,6 @@ interface ModuleCardProps {
   icon: React.ReactNode;
   status: 'active' | 'next' | 'planned';
   bgClass: string;
-  href?: string;
 }
 
 const USE_CASES: ModuleCardProps[] = [
@@ -59,7 +60,7 @@ const USE_CASES: ModuleCardProps[] = [
     title: 'Consola Conversacional & Idempotencia',
     description: 'Chat interactivo con protección X-Idempotency-Key y bloqueo de doble submit.',
     icon: <MessageSquare className="w-6 h-6 stroke-[2.5]" />,
-    status: 'next',
+    status: 'active',
     bgClass: 'bg-sky-200',
   },
   {
@@ -68,7 +69,7 @@ const USE_CASES: ModuleCardProps[] = [
     title: 'Monitor Outbox Worker & Broker',
     description: 'Supervisión en tiempo real del relay asíncrono y métricas de publicación de eventos.',
     icon: <Cpu className="w-6 h-6 stroke-[2.5]" />,
-    status: 'planned',
+    status: 'next',
     bgClass: 'bg-purple-200',
   },
   {
@@ -130,6 +131,7 @@ const USE_CASES: ModuleCardProps[] = [
 export default function Home() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
   const { activeTenant } = useTenant();
+  const [activeTab, setActiveTab] = useState<'modules' | 'chat'>('chat');
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FFFDF8]">
@@ -187,73 +189,126 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Modules Grid */}
-        <section className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-black uppercase tracking-wider text-black">
-              Módulos y Casos de Uso
-            </h2>
-            <span className="font-mono text-xs font-bold px-2 py-1 bg-black text-white">
-              10 CASOS DEFINIDOS
+        {/* View Switcher Tabs */}
+        <div className="flex gap-3 border-b-4 border-black pb-1">
+          <button
+            type="button"
+            onClick={() => setActiveTab('chat')}
+            className={`px-5 py-2.5 text-xs sm:text-sm font-black uppercase tracking-wider border-2 border-black transition-all cursor-pointer ${
+              activeTab === 'chat'
+                ? 'bg-sky-300 text-black shadow-neo -translate-y-1'
+                : 'bg-white text-zinc-700 shadow-neo-xs hover:bg-zinc-100'
+            }`}
+          >
+            <span className="flex items-center gap-2">
+              <MessageSquare className="w-4 h-4" /> CU-03: Consola de Chat & Idempotencia
             </span>
-          </div>
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('modules')}
+            className={`px-5 py-2.5 text-xs sm:text-sm font-black uppercase tracking-wider border-2 border-black transition-all cursor-pointer ${
+              activeTab === 'modules'
+                ? 'bg-amber-300 text-black shadow-neo -translate-y-1'
+                : 'bg-white text-zinc-700 shadow-neo-xs hover:bg-zinc-100'
+            }`}
+          >
+            <span className="flex items-center gap-2">
+              <Terminal className="w-4 h-4" /> Matriz de Casos de Uso (10 Módulos)
+            </span>
+          </button>
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {USE_CASES.map((uc) => (
-              <div
-                key={uc.id}
-                className={`border-4 border-black p-5 shadow-neo transition-all flex flex-col justify-between ${
-                  uc.bgClass
-                } ${uc.status === 'active' ? 'hover:-translate-y-1 hover:shadow-neo-lg' : ''}`}
-              >
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="px-2 py-0.5 font-mono text-xs font-black bg-black text-white uppercase">
-                      {uc.code}
+        {/* Tab 1: Live Interactive Chat Console */}
+        {activeTab === 'chat' && (
+          <section className="space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <h2 className="text-2xl font-black uppercase tracking-wider text-black">
+                  Consola Conversacional en Vivo
+                </h2>
+                <p className="text-xs font-mono text-zinc-600 font-bold mt-0.5">
+                  Protección contra dobles envíos y deduplicación garantizada mediante UUIDv4
+                </p>
+              </div>
+              <span className="px-2.5 py-1 font-mono text-xs font-black bg-emerald-300 text-black border-2 border-black shadow-neo-xs">
+                CU-03 VALIDADO
+              </span>
+            </div>
+
+            <ChatConsole conversationId="conv-cloud-1" />
+          </section>
+        )}
+
+        {/* Tab 2: 10 Modules Grid */}
+        {activeTab === 'modules' && (
+          <section className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-black uppercase tracking-wider text-black">
+                Módulos y Casos de Uso
+              </h2>
+              <span className="font-mono text-xs font-bold px-2 py-1 bg-black text-white">
+                10 CASOS DEFINIDOS
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {USE_CASES.map((uc) => (
+                <div
+                  key={uc.id}
+                  className={`border-4 border-black p-5 shadow-neo transition-all flex flex-col justify-between ${
+                    uc.bgClass
+                  } ${uc.status === 'active' ? 'hover:-translate-y-1 hover:shadow-neo-lg' : ''}`}
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="px-2 py-0.5 font-mono text-xs font-black bg-black text-white uppercase">
+                        {uc.code}
+                      </span>
+                      {uc.status === 'active' ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-400 text-black text-xs font-black uppercase border border-black">
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          Validado
+                        </span>
+                      ) : uc.status === 'next' ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-yellow-400 text-black text-xs font-black uppercase border border-black animate-pulse">
+                          <Clock className="w-3.5 h-3.5" />
+                          Siguiente
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-zinc-300 text-zinc-800 text-xs font-bold uppercase border border-black">
+                          Planificado
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-3 pt-1">
+                      <div className="p-2 bg-white border-2 border-black shadow-neo-sm shrink-0">
+                        {uc.icon}
+                      </div>
+                      <h3 className="font-black text-lg text-black leading-tight">{uc.title}</h3>
+                    </div>
+
+                    <p className="text-xs sm:text-sm font-medium text-black/85 leading-relaxed">
+                      {uc.description}
+                    </p>
+                  </div>
+
+                  <div className="pt-4 mt-2 border-t-2 border-black/30 flex items-center justify-between">
+                    <span className="text-[11px] font-mono font-bold text-black/70 uppercase">
+                      {uc.status === 'active' ? 'Totalmente Operativo' : 'Roadmap v1.0'}
                     </span>
                     {uc.status === 'active' ? (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-400 text-black text-xs font-black uppercase border border-black">
-                        <CheckCircle2 className="w-3.5 h-3.5" />
-                        Validado
+                      <span className="inline-flex items-center gap-1 text-xs font-black uppercase text-black group cursor-pointer">
+                        Acceder <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                       </span>
-                    ) : uc.status === 'next' ? (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-yellow-400 text-black text-xs font-black uppercase border border-black animate-pulse">
-                        <Clock className="w-3.5 h-3.5" />
-                        Siguiente
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-zinc-300 text-zinc-800 text-xs font-bold uppercase border border-black">
-                        Planificado
-                      </span>
-                    )}
+                    ) : null}
                   </div>
-
-                  <div className="flex items-center gap-3 pt-1">
-                    <div className="p-2 bg-white border-2 border-black shadow-neo-sm shrink-0">
-                      {uc.icon}
-                    </div>
-                    <h3 className="font-black text-lg text-black leading-tight">{uc.title}</h3>
-                  </div>
-
-                  <p className="text-xs sm:text-sm font-medium text-black/85 leading-relaxed">
-                    {uc.description}
-                  </p>
                 </div>
-
-                <div className="pt-4 mt-2 border-t-2 border-black/30 flex items-center justify-between">
-                  <span className="text-[11px] font-mono font-bold text-black/70 uppercase">
-                    {uc.status === 'active' ? 'Totalmente Operativo' : 'Roadmap v1.0'}
-                  </span>
-                  {uc.status === 'active' ? (
-                    <span className="inline-flex items-center gap-1 text-xs font-black uppercase text-black group cursor-pointer">
-                      Acceder <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                    </span>
-                  ) : null}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+              ))}
+            </div>
+          </section>
+        )}
       </main>
 
       {/* Footer */}
