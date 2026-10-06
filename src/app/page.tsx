@@ -1,8 +1,261 @@
+'use client';
+
+import React from 'react';
+import { DashboardHeader } from '@/presentation/layouts/DashboardHeader';
+import {
+  Activity,
+  MessageSquare,
+  ShieldCheck,
+  Cpu,
+  Coffee,
+  ShoppingCart,
+  CreditCard,
+  Truck,
+  Headphones,
+  FileText,
+  ArrowRight,
+  ExternalLink,
+  CheckCircle2,
+  Clock,
+} from 'lucide-react';
+
+interface ModuleCardProps {
+  id: string;
+  code: string;
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  status: 'active' | 'next' | 'planned';
+  bgClass: string;
+  href?: string;
+}
+
+const USE_CASES: ModuleCardProps[] = [
+  {
+    id: 'cu-01',
+    code: 'CU-01',
+    title: 'Monitor de Salud y Diagnóstico',
+    description: 'Verificación continua de disponibilidad de API, SQL Server y RabbitMQ.',
+    icon: <Activity className="w-6 h-6 stroke-[2.5]" />,
+    status: 'active',
+    bgClass: 'bg-emerald-200',
+  },
+  {
+    id: 'cu-02',
+    code: 'CU-02',
+    title: 'Motor Conversacional & Streaming',
+    description: 'Chat reactivo con Server-Sent Events (SSE), fallback REST y renderizado Markdown.',
+    icon: <MessageSquare className="w-6 h-6 stroke-[2.5]" />,
+    status: 'next',
+    bgClass: 'bg-amber-200',
+  },
+  {
+    id: 'cu-03',
+    code: 'CU-03',
+    title: 'Idempotencia & Prevención de Duplicados',
+    description: 'Protección con X-Idempotency-Key y bloqueo de doble clic en turnos de chat.',
+    icon: <ShieldCheck className="w-6 h-6 stroke-[2.5]" />,
+    status: 'planned',
+    bgClass: 'bg-sky-200',
+  },
+  {
+    id: 'cu-04',
+    code: 'CU-04',
+    title: 'Monitor Outbox Worker & Broker',
+    description: 'Supervisión en tiempo real del relay asíncrono y métricas de publicación de eventos.',
+    icon: <Cpu className="w-6 h-6 stroke-[2.5]" />,
+    status: 'planned',
+    bgClass: 'bg-purple-200',
+  },
+  {
+    id: 'cu-05',
+    code: 'CU-05',
+    title: 'Catálogo & Búsqueda Semántica RAG',
+    description: 'Exploración de cafés, pastelería y consulta asistida por embeddings vectoriales.',
+    icon: <Coffee className="w-6 h-6 stroke-[2.5]" />,
+    status: 'planned',
+    bgClass: 'bg-rose-200',
+  },
+  {
+    id: 'cu-06',
+    code: 'CU-06',
+    title: 'Carrito Interactivo & Formulación',
+    description: 'Personalización de ítems con modifiers (leche vegetal, extra shot) y validación de stock.',
+    icon: <ShoppingCart className="w-6 h-6 stroke-[2.5]" />,
+    status: 'planned',
+    bgClass: 'bg-teal-200',
+  },
+  {
+    id: 'cu-07',
+    code: 'CU-07',
+    title: 'Checkout & Finalización Transaccional',
+    description: 'Cálculo de impuestos, descuentos y emisión de orden con compensación Saga.',
+    icon: <CreditCard className="w-6 h-6 stroke-[2.5]" />,
+    status: 'planned',
+    bgClass: 'bg-yellow-200',
+  },
+  {
+    id: 'cu-08',
+    code: 'CU-08',
+    title: 'Tracking & Ciclo de Vida del Pedido',
+    description: 'Línea de tiempo en vivo de preparación, despacho y retiro en tienda.',
+    icon: <Truck className="w-6 h-6 stroke-[2.5]" />,
+    status: 'planned',
+    bgClass: 'bg-indigo-200',
+  },
+  {
+    id: 'cu-09',
+    code: 'CU-09',
+    title: 'Escalamiento Humano & Handover',
+    description: 'Transferencia fluida a operadores con historial sincronizado y alertas.',
+    icon: <Headphones className="w-6 h-6 stroke-[2.5]" />,
+    status: 'planned',
+    bgClass: 'bg-orange-200',
+  },
+  {
+    id: 'cu-10',
+    code: 'CU-10',
+    title: 'Auditoría & Observabilidad de Seguridad',
+    description: 'Trazas de auditoría estructuradas, inspección de payloads y análisis forense.',
+    icon: <FileText className="w-6 h-6 stroke-[2.5]" />,
+    status: 'planned',
+    bgClass: 'bg-zinc-200',
+  },
+];
+
 export default function Home() {
+  const isMockMode = process.env.NEXT_PUBLIC_USE_MOCKS === 'true';
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
   return (
-    <main>
-      <h1>Coffee Chatbot</h1>
-      <p>Cliente web inicial para el chatbot de la cafetería.</p>
-    </main>
+    <div className="min-h-screen flex flex-col bg-[#FFFDF8]">
+      <DashboardHeader />
+
+      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-8 space-y-8">
+        {/* Hero Section */}
+        <section className="bg-white border-4 border-black p-6 sm:p-8 shadow-neo-lg relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-amber-300 border-l-4 border-b-4 border-black -mr-10 -mt-10 rotate-12 -z-0 pointer-events-none" />
+
+          <div className="relative z-10 max-w-3xl space-y-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-black text-amber-300 font-mono text-xs font-black uppercase tracking-wider">
+              <span>Clean Architecture</span>
+              <span>•</span>
+              <span>Neubrutalism 3D</span>
+            </div>
+
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-black">
+              Portal de Operaciones & Pruebas
+            </h1>
+
+            <p className="text-base sm:text-lg text-black/80 font-medium leading-relaxed">
+              Consola interactiva para el sistema conversacional de pedidos de cafetería. Diseñado
+              para validar de extremo a extremo los 10 casos de uso del motor, tanto en modo
+              desacoplado (In-Memory Mocks) como contra la API FastAPI en producción.
+            </p>
+
+            <div className="pt-2 flex flex-wrap gap-3">
+              <a
+                href={`${apiUrl}/docs`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2.5 bg-yellow-300 text-black font-black uppercase text-sm border-2 border-black shadow-neo hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all cursor-pointer"
+              >
+                Swagger API Docs
+                <ExternalLink className="w-4 h-4 stroke-[2.5]" />
+              </a>
+              <a
+                href={`${apiUrl}/redoc`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2.5 bg-sky-200 text-black font-black uppercase text-sm border-2 border-black shadow-neo hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all cursor-pointer"
+              >
+                ReDoc Specification
+                <ExternalLink className="w-4 h-4 stroke-[2.5]" />
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* Modules Grid */}
+        <section className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-black uppercase tracking-wider text-black">
+              Módulos y Casos de Uso
+            </h2>
+            <span className="font-mono text-xs font-bold px-2 py-1 bg-black text-white">
+              10 CASOS DEFINIDOS
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {USE_CASES.map((uc) => (
+              <div
+                key={uc.id}
+                className={`border-4 border-black p-5 shadow-neo transition-all flex flex-col justify-between ${
+                  uc.bgClass
+                } ${uc.status === 'active' ? 'hover:-translate-y-1 hover:shadow-neo-lg' : ''}`}
+              >
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="px-2 py-0.5 font-mono text-xs font-black bg-black text-white uppercase">
+                      {uc.code}
+                    </span>
+                    {uc.status === 'active' ? (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-400 text-black text-xs font-black uppercase border border-black">
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        Validado
+                      </span>
+                    ) : uc.status === 'next' ? (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-yellow-400 text-black text-xs font-black uppercase border border-black animate-pulse">
+                        <Clock className="w-3.5 h-3.5" />
+                        Siguiente
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-zinc-300 text-zinc-800 text-xs font-bold uppercase border border-black">
+                        Planificado
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-3 pt-1">
+                    <div className="p-2 bg-white border-2 border-black shadow-neo-sm shrink-0">
+                      {uc.icon}
+                    </div>
+                    <h3 className="font-black text-lg text-black leading-tight">{uc.title}</h3>
+                  </div>
+
+                  <p className="text-xs sm:text-sm font-medium text-black/85 leading-relaxed">
+                    {uc.description}
+                  </p>
+                </div>
+
+                <div className="pt-4 mt-2 border-t-2 border-black/30 flex items-center justify-between">
+                  <span className="text-[11px] font-mono font-bold text-black/70 uppercase">
+                    {uc.status === 'active' ? 'Totalmente Operativo' : 'Roadmap v1.0'}
+                  </span>
+                  {uc.status === 'active' ? (
+                    <span className="inline-flex items-center gap-1 text-xs font-black uppercase text-black group cursor-pointer">
+                      Acceder <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  ) : null}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </main>
+
+      {/* Footer */}
+      <footer className="border-t-4 border-black bg-white p-6 mt-12">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono font-bold text-black">
+          <p>© 2026 AngelSolutions • AI Conversation Platform</p>
+          <div className="flex items-center gap-4">
+            <span>Clean Architecture Frontend</span>
+            <span>•</span>
+            <span>TypeScript & Next.js 14</span>
+          </div>
+        </div>
+      </footer>
+    </div>
   );
 }
