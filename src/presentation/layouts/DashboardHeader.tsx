@@ -2,28 +2,41 @@
 
 import React, { useState } from 'react';
 import { useSystemHealth } from '@/application/health/useSystemHealth';
+import { useTenant } from '@/application/tenants/TenantContext';
 import { SystemStatusPill } from '@/presentation/components/health/SystemStatusPill';
 import { SystemStatusModal } from '@/presentation/components/health/SystemStatusModal';
+import { TenantSelectorDropdown } from '@/presentation/components/tenants/TenantSelectorDropdown';
+import { TenantSwitchGuardModal } from '@/presentation/components/tenants/TenantSwitchGuardModal';
 import { SystemHealth } from '@/domain/health/SystemHealth';
-import { Bot, Layers, Sparkles } from 'lucide-react';
+import { Bot, Layers } from 'lucide-react';
 
 export const DashboardHeader: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { data: healthData, isLoading, isError, refetch, isFetching } = useSystemHealth();
+  const { data: healthData, isLoading: isHealthLoading, isError: isHealthError, refetch, isFetching } = useSystemHealth();
+  const {
+    activeTenant,
+    tenants,
+    isLoading: isTenantLoading,
+    requestSwitchTenant,
+    pendingTenant,
+    isSwitchGuardOpen,
+    confirmSwitchTenant,
+    cancelSwitchTenant,
+  } = useTenant();
 
   const isMockMode = process.env.NEXT_PUBLIC_USE_MOCKS === 'true';
 
   const health =
     healthData ??
-    (isLoading
+    (isHealthLoading
       ? new SystemHealth('CHECKING', 0, new Date())
-      : isError
+      : isHealthError
       ? new SystemHealth('DOWN', 0, new Date(), [{ name: 'api', status: 'DOWN', message: 'Failed to connect' }])
       : new SystemHealth('CHECKING', 0, new Date()));
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full bg-amber-300 border-b-4 border-black px-4 sm:px-8 py-3.5 shadow-neo flex items-center justify-between">
+      <header className="sticky top-0 z-40 w-full bg-amber-300 border-b-4 border-black px-4 sm:px-8 py-3 shadow-neo flex flex-wrap items-center justify-between gap-3">
         {/* Brand / Logo */}
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-white border-2 border-black shadow-neo-sm flex items-center justify-center -rotate-2">
@@ -44,8 +57,16 @@ export const DashboardHeader: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Actions: Environment & Health */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        {/* Right Actions: Tenant Selector, Environment & Health */}
+        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+          {/* Tenant Selector Dropdown */}
+          <TenantSelectorDropdown
+            activeTenant={activeTenant}
+            tenants={tenants}
+            onSelectTenant={(target) => requestSwitchTenant(target, false)}
+            isLoading={isTenantLoading}
+          />
+
           {/* Mock / Live indicator */}
           <span
             className={`px-2 py-1 text-[11px] font-black uppercase tracking-wider border-2 border-black shadow-neo-sm ${
@@ -67,6 +88,15 @@ export const DashboardHeader: React.FC = () => {
         onClose={() => setIsModalOpen(false)}
         onRefresh={() => refetch()}
         isRefreshing={isFetching}
+      />
+
+      {/* Tenant Switch Guard Modal */}
+      <TenantSwitchGuardModal
+        isOpen={isSwitchGuardOpen}
+        currentTenant={activeTenant}
+        targetTenant={pendingTenant}
+        onConfirm={() => confirmSwitchTenant()}
+        onCancel={cancelSwitchTenant}
       />
     </>
   );

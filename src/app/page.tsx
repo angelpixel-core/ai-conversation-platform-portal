@@ -2,6 +2,9 @@
 
 import React from 'react';
 import { DashboardHeader } from '@/presentation/layouts/DashboardHeader';
+import { useTenant } from '@/application/tenants/TenantContext';
+import { TenantTierBadge } from '@/presentation/components/tenants/TenantTierBadge';
+import { TenantAvatar } from '@/presentation/components/tenants/TenantAvatar';
 import {
   Activity,
   MessageSquare,
@@ -17,6 +20,7 @@ import {
   ExternalLink,
   CheckCircle2,
   Clock,
+  ShieldAlert,
 } from 'lucide-react';
 
 interface ModuleCardProps {
@@ -43,19 +47,19 @@ const USE_CASES: ModuleCardProps[] = [
   {
     id: 'cu-02',
     code: 'CU-02',
-    title: 'Motor Conversacional & Streaming',
-    description: 'Chat reactivo con Server-Sent Events (SSE), fallback REST y renderizado Markdown.',
-    icon: <MessageSquare className="w-6 h-6 stroke-[2.5]" />,
-    status: 'next',
+    title: 'Contexto & Aislamiento Multi-Tenant',
+    description: 'Selector corporativo, inyección de X-Tenant-Id y guardia de conmutación.',
+    icon: <ShieldAlert className="w-6 h-6 stroke-[2.5]" />,
+    status: 'active',
     bgClass: 'bg-amber-200',
   },
   {
     id: 'cu-03',
     code: 'CU-03',
-    title: 'Idempotencia & Prevención de Duplicados',
-    description: 'Protección con X-Idempotency-Key y bloqueo de doble clic en turnos de chat.',
-    icon: <ShieldCheck className="w-6 h-6 stroke-[2.5]" />,
-    status: 'planned',
+    title: 'Consola Conversacional & Idempotencia',
+    description: 'Chat interactivo con protección X-Idempotency-Key y bloqueo de doble submit.',
+    icon: <MessageSquare className="w-6 h-6 stroke-[2.5]" />,
+    status: 'next',
     bgClass: 'bg-sky-200',
   },
   {
@@ -70,35 +74,35 @@ const USE_CASES: ModuleCardProps[] = [
   {
     id: 'cu-05',
     code: 'CU-05',
-    title: 'Catálogo & Búsqueda Semántica RAG',
-    description: 'Exploración de cafés, pastelería y consulta asistida por embeddings vectoriales.',
-    icon: <Coffee className="w-6 h-6 stroke-[2.5]" />,
+    title: 'Dashboard de Cuotas & Presupuestos',
+    description: 'Gestión de límites de gasto en USD, consumo de tokens y políticas por tenant.',
+    icon: <CreditCard className="w-6 h-6 stroke-[2.5]" />,
     status: 'planned',
     bgClass: 'bg-rose-200',
   },
   {
     id: 'cu-06',
     code: 'CU-06',
-    title: 'Carrito Interactivo & Formulación',
-    description: 'Personalización de ítems con modifiers (leche vegetal, extra shot) y validación de stock.',
-    icon: <ShoppingCart className="w-6 h-6 stroke-[2.5]" />,
+    title: 'Aprobaciones Human-in-the-Loop',
+    description: 'Bandeja de decisiones para acciones sensibles, tool-calling y órdenes de alto valor.',
+    icon: <ShieldCheck className="w-6 h-6 stroke-[2.5]" />,
     status: 'planned',
     bgClass: 'bg-teal-200',
   },
   {
     id: 'cu-07',
     code: 'CU-07',
-    title: 'Checkout & Finalización Transaccional',
-    description: 'Cálculo de impuestos, descuentos y emisión de orden con compensación Saga.',
-    icon: <CreditCard className="w-6 h-6 stroke-[2.5]" />,
+    title: 'Ingesta de Documentos & RAG Híbrido',
+    description: 'Exploración de catálogo, embeddings y recuperación con citaciones verificadas.',
+    icon: <Coffee className="w-6 h-6 stroke-[2.5]" />,
     status: 'planned',
     bgClass: 'bg-yellow-200',
   },
   {
     id: 'cu-08',
     code: 'CU-08',
-    title: 'Tracking & Ciclo de Vida del Pedido',
-    description: 'Línea de tiempo en vivo de preparación, despacho y retiro en tienda.',
+    title: 'Streaming Resiliente en Vivo (SSE)',
+    description: 'Streaming token-by-token de respuestas LLM con recuperación de desconexiones.',
     icon: <Truck className="w-6 h-6 stroke-[2.5]" />,
     status: 'planned',
     bgClass: 'bg-indigo-200',
@@ -106,8 +110,8 @@ const USE_CASES: ModuleCardProps[] = [
   {
     id: 'cu-09',
     code: 'CU-09',
-    title: 'Escalamiento Humano & Handover',
-    description: 'Transferencia fluida a operadores con historial sincronizado y alertas.',
+    title: 'Grafo de Workflows Multi-Agente',
+    description: 'Visualización de estados, checkpoints y toma de decisiones de agentes LangGraph.',
     icon: <Headphones className="w-6 h-6 stroke-[2.5]" />,
     status: 'planned',
     bgClass: 'bg-orange-200',
@@ -115,8 +119,8 @@ const USE_CASES: ModuleCardProps[] = [
   {
     id: 'cu-10',
     code: 'CU-10',
-    title: 'Auditoría & Observabilidad de Seguridad',
-    description: 'Trazas de auditoría estructuradas, inspección de payloads y análisis forense.',
+    title: 'Auditoría & Observabilidad de Guardrails',
+    description: 'Trazas de auditoría estructuradas, inspección de payloads y análisis de seguridad.',
     icon: <FileText className="w-6 h-6 stroke-[2.5]" />,
     status: 'planned',
     bgClass: 'bg-zinc-200',
@@ -124,8 +128,8 @@ const USE_CASES: ModuleCardProps[] = [
 ];
 
 export default function Home() {
-  const isMockMode = process.env.NEXT_PUBLIC_USE_MOCKS === 'true';
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+  const { activeTenant } = useTenant();
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FFFDF8]">
@@ -137,10 +141,17 @@ export default function Home() {
           <div className="absolute top-0 right-0 w-32 h-32 bg-amber-300 border-l-4 border-b-4 border-black -mr-10 -mt-10 rotate-12 -z-0 pointer-events-none" />
 
           <div className="relative z-10 max-w-3xl space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-black text-amber-300 font-mono text-xs font-black uppercase tracking-wider">
-              <span>Clean Architecture</span>
-              <span>•</span>
-              <span>Neubrutalism 3D</span>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="px-3 py-1 bg-black text-amber-300 font-mono text-xs font-black uppercase tracking-wider">
+                Clean Architecture • Neubrutalism 3D
+              </span>
+              {activeTenant && (
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-200 border-2 border-black font-mono text-xs font-black shadow-neo-xs">
+                  <TenantAvatar tenant={activeTenant} size="sm" />
+                  <span className="truncate max-w-[150px]">{activeTenant.name}</span>
+                  <TenantTierBadge tier={activeTenant.tier} />
+                </div>
+              )}
             </div>
 
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-black">
@@ -148,7 +159,7 @@ export default function Home() {
             </h1>
 
             <p className="text-base sm:text-lg text-black/80 font-medium leading-relaxed">
-              Consola interactiva para el sistema conversacional de pedidos de cafetería. Diseñado
+              Consola interactiva para el sistema conversacional corporativo de cafetería. Diseñado
               para validar de extremo a extremo los 10 casos de uso del motor, tanto en modo
               desacoplado (In-Memory Mocks) como contra la API FastAPI en producción.
             </p>
