@@ -86,6 +86,18 @@ src/
 
 ---
 
+### 4. CU-04: Outbox Worker & Asynchronous Event Broker Monitor
+- **Transactional Outbox Inspection:** Polling MSSQL `outbox_messages` table via atomic locking (`UPDLOCK, READPAST`).
+- **Decoupled Asynchronous Relay:** Event streaming across RabbitMQ exchanges (`conversation.events`) to worker nodes (`worker-node-[1..3]`).
+- **Finite State Machine Pipeline:** Real-time progression tracking (`PENDING_OUTBOX` ➔ `QUEUED_BROKER` ➔ `PROCESSING_WORKER` ➔ `COMPLETED`).
+- **Dead-Letter Queue (DLQ) Incident Recovery:** Simulation of broker/worker timeouts with instant tactile "Reintentar" action and status restoration.
+
+| Outbox Pipeline & Broker Architecture Overview | Dead-Letter Queue (DLQ) Incident & Manual Retry |
+| :---: | :---: |
+| ![Outbox Pipeline Overview](docs/assets/cu04_outbox_pipeline_overview.png) | ![DLQ Incident & Manual Retry](docs/assets/cu04_outbox_dlq_incident_retry.png) |
+
+---
+
 
 ## 📊 Master Traceability Matrix
 
@@ -142,7 +154,7 @@ The visual design language is built using custom Tailwind CSS utility tokens:
 
 Every feature is developed following the **Red-Green-Refactor** TDD workflow with unit and component tests written in **Vitest** and **React Testing Library**:
 
-- **78 Automated Tests** across **26 Test Suites** (100% Passing).
+- **102 Automated Tests** across **33 Test Suites** (100% Passing).
 - **Domain Tests:** Value object validations, invariants, and aggregate behaviors.
 - **Adapter Tests:** Tolerant reader response parsing, error states, and header injections.
 - **Component Tests:** Neubrutalism styling, ARIA roles, click handlers, and modal dismissals.
@@ -181,7 +193,7 @@ Open **[http://localhost:3000](http://localhost:3000)** in your browser.
 | Command | Purpose |
 | :--- | :--- |
 | `npm run dev` | Starts local Next.js development server at `http://localhost:3000` |
-| `npm test` | Runs all 99 Vitest tests across 32 test suites once |
+| `npm test` | Runs all 102 Vitest tests across 33 test suites once |
 | `npm run test:watch` | Runs Vitest in interactive watch mode |
 | `npm run build` | Compiles optimized Next.js production build and checks TypeScript types |
 | `npm start` | Runs the production build server |
