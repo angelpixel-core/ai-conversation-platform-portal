@@ -181,7 +181,7 @@ Open **[http://localhost:3000](http://localhost:3000)** in your browser.
 | Command | Purpose |
 | :--- | :--- |
 | `npm run dev` | Starts local Next.js development server at `http://localhost:3000` |
-| `npm test` | Runs all 78 Vitest test suites once |
+| `npm test` | Runs all 99 Vitest tests across 32 test suites once |
 | `npm run test:watch` | Runs Vitest in interactive watch mode |
 | `npm run build` | Compiles optimized Next.js production build and checks TypeScript types |
 | `npm start` | Runs the production build server |
