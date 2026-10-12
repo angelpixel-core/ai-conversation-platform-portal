@@ -67,7 +67,12 @@ src/
 - **Transparent Context Propagation:** Client-side interceptor automatically injects `X-Tenant-Id: <slug>` into all outgoing business requests.
 - **Cross-Tenant Data Leakage Guard:** `TenantSwitchGuardModal` intercepts workspace changes when active conversational state exists, requiring explicit confirmation to flush volatile memory.
 
+| Organization Selector Dropdown | Data Isolation Guard Modal (`TenantSwitchGuardModal`) |
+| :---: | :---: |
+| ![Tenant Selector Dropdown](docs/assets/cu02_tenant_selector_dropdown.png) | ![Tenant Switch Guard Modal](docs/assets/cu02_tenant_switch_guard_modal.png) |
+
 ---
+
 
 ### 3. CU-03: Conversational Console & Distributed Idempotency
 - **Cryptographic Idempotency Keys:** Every send action generates a unique `UUIDv4` transmitted via the `Idempotency-Key` HTTP header.

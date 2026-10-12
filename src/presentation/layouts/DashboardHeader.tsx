@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import { useSystemHealth } from '@/application/health/useSystemHealth';
 import { useTenant } from '@/application/tenants/TenantContext';
+import { useConversation, CONVERSATION_QUERY_KEY } from '@/application/conversations/useConversation';
+import { useQueryClient } from '@tanstack/react-query';
 import { SystemStatusPill } from '@/presentation/components/health/SystemStatusPill';
 import { SystemStatusModal } from '@/presentation/components/health/SystemStatusModal';
 import { TenantSelectorDropdown } from '@/presentation/components/tenants/TenantSelectorDropdown';
@@ -12,6 +14,7 @@ import { Bot, Layers } from 'lucide-react';
 
 export const DashboardHeader: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const queryClient = useQueryClient();
   const { data: healthData, isLoading: isHealthLoading, isError: isHealthError, refetch, isFetching } = useSystemHealth();
   const {
     activeTenant,
@@ -23,6 +26,9 @@ export const DashboardHeader: React.FC = () => {
     confirmSwitchTenant,
     cancelSwitchTenant,
   } = useTenant();
+
+  const { data: conversation } = useConversation('conv-cloud-1');
+  const hasActiveConversation = (conversation?.messages?.length ?? 0) > 0;
 
   const isMockMode = process.env.NEXT_PUBLIC_USE_MOCKS === 'true';
 
@@ -63,7 +69,7 @@ export const DashboardHeader: React.FC = () => {
           <TenantSelectorDropdown
             activeTenant={activeTenant}
             tenants={tenants}
-            onSelectTenant={(target) => requestSwitchTenant(target, false)}
+            onSelectTenant={(target) => requestSwitchTenant(target, hasActiveConversation)}
             isLoading={isTenantLoading}
           />
 
@@ -95,7 +101,11 @@ export const DashboardHeader: React.FC = () => {
         isOpen={isSwitchGuardOpen}
         currentTenant={activeTenant}
         targetTenant={pendingTenant}
-        onConfirm={() => confirmSwitchTenant()}
+        onConfirm={() =>
+          confirmSwitchTenant(() => {
+            queryClient.invalidateQueries({ queryKey: CONVERSATION_QUERY_KEY('conv-cloud-1') });
+          })
+        }
         onCancel={cancelSwitchTenant}
       />
     </>
