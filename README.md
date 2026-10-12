@@ -80,7 +80,12 @@ src/
 - **Optimistic UI with Rollback:** User messages appear immediately in the timeline with a visual "in-flight" status; changes roll back cleanly if a network error occurs.
 - **Anti-Double-Submit Protection:** Input fields and mechanical 3D submit buttons lock automatically while mutations are processing.
 
+| Turn Alternation & In-Flight Protection Guard | Completed Multi-Turn Conversation & Delivery Badges |
+| :---: | :---: |
+| ![Turn Alternation & In-Flight Guard](docs/assets/cu03_turn_protection_guard.png) | ![Completed Multi-Turn Conversation](docs/assets/cu03_conversation_completed.png) |
+
 ---
+
 
 ## 📊 Master Traceability Matrix
 
@@ -89,7 +94,7 @@ src/
 | **01** | [`01-cu-01-system-health.md`](docs/roadmap/01-cu-01-system-health.md) | **System Health & Availability Monitor** | Step 1: Health & Docs | Hexagonal Base | 🟢 **Validated** |
 | **02** | [`02-cu-02-tenant-isolation.md`](docs/roadmap/02-cu-02-tenant-isolation.md) | **Tenant Selector & Workspace Isolation** | Step 2: Multi-Tenancy | Slice 6 | 🟢 **Validated** |
 | **03** | [`03-cu-03-chat-idempotency.md`](docs/roadmap/03-cu-03-chat-idempotency.md) | **Conversational Console & Idempotency** | Step 3: Idempotency | Slices 1, 2, 5 | 🟢 **Validated** |
-| **04** | [`04-cu-04-outbox-worker-monitor.md`](docs/roadmap/04-cu-04-outbox-worker-monitor.md) | **Outbox Worker & Asynchronous Dispatch** | Step 6: Decoupled Worker | Slice 4 | 🟡 In Roadmap |
+| **04** | [`04-cu-04-outbox-worker-monitor.md`](docs/roadmap/04-cu-04-outbox-worker-monitor.md) | **Outbox Worker & Asynchronous Dispatch** | Step 6: Decoupled Worker | Slice 4 | 🟢 **Validated (PR #2)** |
 | **05** | [`05-cu-05-governance-budget.md`](docs/roadmap/05-cu-05-governance-budget.md) | **Tenant Quotas & Cost Governance** | Step 5: Tenant Governance | Slice 6 | 🟡 In Roadmap |
 | **06** | [`06-cu-06-hitl-approvals.md`](docs/roadmap/06-cu-06-hitl-approvals.md) | **Human-in-the-Loop Approvals Center** | Step 8: Tool Calling & HITL | Slice 8 | 🟡 In Roadmap |
 | **07** | [`07-cu-07-hybrid-rag-knowledge.md`](docs/roadmap/07-cu-07-hybrid-rag-knowledge.md) | **Document Ingestion & Hybrid RAG** | Step 7: Knowledge & RAG | Slice 7 | 🟡 In Roadmap |
