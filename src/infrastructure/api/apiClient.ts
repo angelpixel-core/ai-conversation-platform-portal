@@ -2,6 +2,13 @@ import { tenantSessionStore } from '../storage/tenantSessionStore';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
+export class ApiError extends Error {
+  constructor(message: string, public readonly status: number) {
+    super(message);
+    this.name = 'ApiError';
+  }
+}
+
 export async function apiFetch<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const url = endpoint.startsWith('http') ? endpoint : `${BASE_URL}${endpoint}`;
   const headers = new Headers(options.headers || {});
@@ -31,7 +38,7 @@ export async function apiFetch<T>(endpoint: string, options: RequestInit = {}): 
     } catch {
       // Use fallback error message
     }
-    throw new Error(errorMessage);
+    throw new ApiError(errorMessage, response.status);
   }
 
   return response.json() as Promise<T>;

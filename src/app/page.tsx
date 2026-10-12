@@ -7,6 +7,9 @@ import { TenantTierBadge } from '@/presentation/components/tenants/TenantTierBad
 import { TenantAvatar } from '@/presentation/components/tenants/TenantAvatar';
 import { ChatConsole } from '@/presentation/components/chat/ChatConsole';
 import { OutboxWorkerMonitorPanel } from '@/presentation/components/outbox/OutboxWorkerMonitorPanel';
+import { GovernanceDashboardPanel } from '@/presentation/components/governance/GovernanceDashboardPanel';
+import { ApprovalsInboxPanel } from '@/presentation/components/approvals/ApprovalsInboxPanel';
+import { KnowledgePanel } from '@/presentation/components/knowledge/KnowledgePanel';
 import {
   Activity,
   MessageSquare,
@@ -79,7 +82,7 @@ const USE_CASES: ModuleCardProps[] = [
     title: 'Dashboard de Cuotas & Presupuestos',
     description: 'Gestión de límites de gasto en USD, consumo de tokens y políticas por tenant.',
     icon: <CreditCard className="w-6 h-6 stroke-[2.5]" />,
-    status: 'planned',
+    status: 'active',
     bgClass: 'bg-rose-200',
   },
   {
@@ -88,7 +91,7 @@ const USE_CASES: ModuleCardProps[] = [
     title: 'Aprobaciones Human-in-the-Loop',
     description: 'Bandeja de decisiones para acciones sensibles, tool-calling y órdenes de alto valor.',
     icon: <ShieldCheck className="w-6 h-6 stroke-[2.5]" />,
-    status: 'planned',
+    status: 'active',
     bgClass: 'bg-teal-200',
   },
   {
@@ -97,7 +100,7 @@ const USE_CASES: ModuleCardProps[] = [
     title: 'Ingesta de Documentos & RAG Híbrido',
     description: 'Exploración de catálogo, embeddings y recuperación con citaciones verificadas.',
     icon: <Coffee className="w-6 h-6 stroke-[2.5]" />,
-    status: 'planned',
+    status: 'active',
     bgClass: 'bg-yellow-200',
   },
   {
@@ -132,7 +135,7 @@ const USE_CASES: ModuleCardProps[] = [
 export default function Home() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
   const { activeTenant } = useTenant();
-  const [activeTab, setActiveTab] = useState<'modules' | 'chat' | 'outbox'>('chat');
+  const [activeTab, setActiveTab] = useState<'modules' | 'chat' | 'outbox' | 'governance' | 'approvals' | 'knowledge'>('knowledge');
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FFFDF8]">
@@ -220,6 +223,45 @@ export default function Home() {
           </button>
           <button
             type="button"
+            onClick={() => setActiveTab('governance')}
+            className={`px-5 py-2.5 text-xs sm:text-sm font-black uppercase tracking-wider border-2 border-black transition-all cursor-pointer ${
+              activeTab === 'governance'
+                ? 'bg-rose-300 text-black shadow-neo -translate-y-1'
+                : 'bg-white text-zinc-700 shadow-neo-xs hover:bg-zinc-100'
+            }`}
+          >
+            <span className="flex items-center gap-2">
+              <CreditCard className="w-4 h-4" /> CU-05: Cuotas & Presupuestos
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('approvals')}
+            className={`px-5 py-2.5 text-xs sm:text-sm font-black uppercase tracking-wider border-2 border-black transition-all cursor-pointer ${
+              activeTab === 'approvals'
+                ? 'bg-teal-300 text-black shadow-neo -translate-y-1'
+                : 'bg-white text-zinc-700 shadow-neo-xs hover:bg-zinc-100'
+            }`}
+          >
+            <span className="flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4" /> CU-06: Aprobaciones HITL
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('knowledge')}
+            className={`px-5 py-2.5 text-xs sm:text-sm font-black uppercase tracking-wider border-2 border-black transition-all cursor-pointer ${
+              activeTab === 'knowledge'
+                ? 'bg-yellow-300 text-black shadow-neo -translate-y-1'
+                : 'bg-white text-zinc-700 shadow-neo-xs hover:bg-zinc-100'
+            }`}
+          >
+            <span className="flex items-center gap-2">
+              <Coffee className="w-4 h-4" /> CU-07: Ingesta & RAG Híbrido
+            </span>
+          </button>
+          <button
+            type="button"
             onClick={() => setActiveTab('modules')}
             className={`px-5 py-2.5 text-xs sm:text-sm font-black uppercase tracking-wider border-2 border-black transition-all cursor-pointer ${
               activeTab === 'modules'
@@ -261,7 +303,28 @@ export default function Home() {
           </section>
         )}
 
-        {/* Tab 3: 10 Modules Grid */}
+        {/* Tab 3: Governance Dashboard Panel */}
+        {activeTab === 'governance' && (
+          <section className="space-y-4">
+            <GovernanceDashboardPanel />
+          </section>
+        )}
+
+        {/* Tab 4: HITL Approvals Center Panel */}
+        {activeTab === 'approvals' && (
+          <section className="space-y-4">
+            <ApprovalsInboxPanel />
+          </section>
+        )}
+
+        {/* Tab 5: Hybrid RAG & Knowledge Base Manager */}
+        {activeTab === 'knowledge' && (
+          <section className="space-y-4">
+            <KnowledgePanel />
+          </section>
+        )}
+
+        {/* Tab 6: 10 Modules Grid */}
         {activeTab === 'modules' && (
           <section className="space-y-4">
             <div className="flex items-center justify-between">
@@ -325,6 +388,9 @@ export default function Home() {
                         onClick={() => {
                           if (uc.id === 'cu-03') setActiveTab('chat');
                           if (uc.id === 'cu-04') setActiveTab('outbox');
+                          if (uc.id === 'cu-05') setActiveTab('governance');
+                          if (uc.id === 'cu-06') setActiveTab('approvals');
+                          if (uc.id === 'cu-07') setActiveTab('knowledge');
                         }}
                         className="inline-flex items-center gap-1 text-xs font-black uppercase text-black group cursor-pointer hover:underline"
                       >
