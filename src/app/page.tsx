@@ -9,6 +9,7 @@ import { ChatConsole } from '@/presentation/components/chat/ChatConsole';
 import { OutboxWorkerMonitorPanel } from '@/presentation/components/outbox/OutboxWorkerMonitorPanel';
 import { GovernanceDashboardPanel } from '@/presentation/components/governance/GovernanceDashboardPanel';
 import { ApprovalsInboxPanel } from '@/presentation/components/approvals/ApprovalsInboxPanel';
+import { KnowledgePanel } from '@/presentation/components/knowledge/KnowledgePanel';
 import {
   Activity,
   MessageSquare,
@@ -99,7 +100,7 @@ const USE_CASES: ModuleCardProps[] = [
     title: 'Ingesta de Documentos & RAG Híbrido',
     description: 'Exploración de catálogo, embeddings y recuperación con citaciones verificadas.',
     icon: <Coffee className="w-6 h-6 stroke-[2.5]" />,
-    status: 'planned',
+    status: 'active',
     bgClass: 'bg-yellow-200',
   },
   {
@@ -134,7 +135,7 @@ const USE_CASES: ModuleCardProps[] = [
 export default function Home() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
   const { activeTenant } = useTenant();
-  const [activeTab, setActiveTab] = useState<'modules' | 'chat' | 'outbox' | 'governance' | 'approvals'>('approvals');
+  const [activeTab, setActiveTab] = useState<'modules' | 'chat' | 'outbox' | 'governance' | 'approvals' | 'knowledge'>('knowledge');
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FFFDF8]">
@@ -248,6 +249,19 @@ export default function Home() {
           </button>
           <button
             type="button"
+            onClick={() => setActiveTab('knowledge')}
+            className={`px-5 py-2.5 text-xs sm:text-sm font-black uppercase tracking-wider border-2 border-black transition-all cursor-pointer ${
+              activeTab === 'knowledge'
+                ? 'bg-yellow-300 text-black shadow-neo -translate-y-1'
+                : 'bg-white text-zinc-700 shadow-neo-xs hover:bg-zinc-100'
+            }`}
+          >
+            <span className="flex items-center gap-2">
+              <Coffee className="w-4 h-4" /> CU-07: Ingesta & RAG Híbrido
+            </span>
+          </button>
+          <button
+            type="button"
             onClick={() => setActiveTab('modules')}
             className={`px-5 py-2.5 text-xs sm:text-sm font-black uppercase tracking-wider border-2 border-black transition-all cursor-pointer ${
               activeTab === 'modules'
@@ -303,7 +317,14 @@ export default function Home() {
           </section>
         )}
 
-        {/* Tab 4: 10 Modules Grid */}
+        {/* Tab 5: Hybrid RAG & Knowledge Base Manager */}
+        {activeTab === 'knowledge' && (
+          <section className="space-y-4">
+            <KnowledgePanel />
+          </section>
+        )}
+
+        {/* Tab 6: 10 Modules Grid */}
         {activeTab === 'modules' && (
           <section className="space-y-4">
             <div className="flex items-center justify-between">
@@ -369,6 +390,7 @@ export default function Home() {
                           if (uc.id === 'cu-04') setActiveTab('outbox');
                           if (uc.id === 'cu-05') setActiveTab('governance');
                           if (uc.id === 'cu-06') setActiveTab('approvals');
+                          if (uc.id === 'cu-07') setActiveTab('knowledge');
                         }}
                         className="inline-flex items-center gap-1 text-xs font-black uppercase text-black group cursor-pointer hover:underline"
                       >
