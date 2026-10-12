@@ -6,6 +6,7 @@ import { useTenant } from '@/application/tenants/TenantContext';
 import { TenantTierBadge } from '@/presentation/components/tenants/TenantTierBadge';
 import { TenantAvatar } from '@/presentation/components/tenants/TenantAvatar';
 import { ChatConsole } from '@/presentation/components/chat/ChatConsole';
+import { OutboxWorkerMonitorPanel } from '@/presentation/components/outbox/OutboxWorkerMonitorPanel';
 import {
   Activity,
   MessageSquare,
@@ -69,7 +70,7 @@ const USE_CASES: ModuleCardProps[] = [
     title: 'Monitor Outbox Worker & Broker',
     description: 'Supervisión en tiempo real del relay asíncrono y métricas de publicación de eventos.',
     icon: <Cpu className="w-6 h-6 stroke-[2.5]" />,
-    status: 'next',
+    status: 'active',
     bgClass: 'bg-purple-200',
   },
   {
@@ -131,7 +132,7 @@ const USE_CASES: ModuleCardProps[] = [
 export default function Home() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
   const { activeTenant } = useTenant();
-  const [activeTab, setActiveTab] = useState<'modules' | 'chat'>('chat');
+  const [activeTab, setActiveTab] = useState<'modules' | 'chat' | 'outbox'>('chat');
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FFFDF8]">
@@ -190,7 +191,7 @@ export default function Home() {
         </section>
 
         {/* View Switcher Tabs */}
-        <div className="flex gap-3 border-b-4 border-black pb-1">
+        <div className="flex flex-wrap gap-3 border-b-4 border-black pb-1">
           <button
             type="button"
             onClick={() => setActiveTab('chat')}
@@ -202,6 +203,19 @@ export default function Home() {
           >
             <span className="flex items-center gap-2">
               <MessageSquare className="w-4 h-4" /> CU-03: Consola de Chat & Idempotencia
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('outbox')}
+            className={`px-5 py-2.5 text-xs sm:text-sm font-black uppercase tracking-wider border-2 border-black transition-all cursor-pointer ${
+              activeTab === 'outbox'
+                ? 'bg-purple-300 text-black shadow-neo -translate-y-1'
+                : 'bg-white text-zinc-700 shadow-neo-xs hover:bg-zinc-100'
+            }`}
+          >
+            <span className="flex items-center gap-2">
+              <Cpu className="w-4 h-4" /> CU-04: Monitor Outbox & Broker
             </span>
           </button>
           <button
@@ -240,7 +254,14 @@ export default function Home() {
           </section>
         )}
 
-        {/* Tab 2: 10 Modules Grid */}
+        {/* Tab 2: Outbox Worker & Broker Monitor */}
+        {activeTab === 'outbox' && (
+          <section className="space-y-4">
+            <OutboxWorkerMonitorPanel />
+          </section>
+        )}
+
+        {/* Tab 3: 10 Modules Grid */}
         {activeTab === 'modules' && (
           <section className="space-y-4">
             <div className="flex items-center justify-between">
@@ -299,9 +320,16 @@ export default function Home() {
                       {uc.status === 'active' ? 'Totalmente Operativo' : 'Roadmap v1.0'}
                     </span>
                     {uc.status === 'active' ? (
-                      <span className="inline-flex items-center gap-1 text-xs font-black uppercase text-black group cursor-pointer">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (uc.id === 'cu-03') setActiveTab('chat');
+                          if (uc.id === 'cu-04') setActiveTab('outbox');
+                        }}
+                        className="inline-flex items-center gap-1 text-xs font-black uppercase text-black group cursor-pointer hover:underline"
+                      >
                         Acceder <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                      </span>
+                      </button>
                     ) : null}
                   </div>
                 </div>
