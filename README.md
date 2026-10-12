@@ -201,6 +201,11 @@ Open **[http://localhost:3000](http://localhost:3000)** in your browser.
 ---
 
 ## 👥 Engineering & Delivery Standards
-- **Branch Strategy:** Feature branches (`feat/01-system-health`, `feat/02-tenant-isolation`, `feat/03-chat-idempotency`) merged into `development`, then promoted to `main`.
+
+- **Branch Strategy:**
+  - `feat/<id>-<slug>` ➔ `development`: Merged via **Squash and Merge** (`--squash`), collapsing iterative WIP commits into a single clean, atomic Conventional Commit.
+  - `development` ➔ `main`: Merged via **Standard Merge Commit** (`--merge`) to maintain exact commit history alignment and prevent branch divergence across release cycles.
+- **Continuous Integration (CI):** Automated GitHub Actions pipeline (`.github/workflows/ci.yml`) validates every PR and push with `npm run build` and `npm test`.
 - **Commit Convention:** Strict [Conventional Commits](https://www.conventionalcommits.org/) (`feat(...)`, `test(...)`, `docs(...)`, `fix(...)`).
-- **Code Standards:** TypeScript strict mode, Clean Architecture layer separation, zero direct coupling between Presentation and Infrastructure.
+- **Full Workflow Specification:** Detailed in [`docs/GIT_WORKFLOW.md`](docs/GIT_WORKFLOW.md).
+
