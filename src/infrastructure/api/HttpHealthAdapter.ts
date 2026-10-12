@@ -13,9 +13,21 @@ export class HttpHealthAdapter implements HealthGatewayPort {
     const startTime = performance.now();
 
     try {
-      const response = await fetch(`${this.baseUrl}/health`, {
-        headers: { Accept: 'application/json' },
-      });
+      let response: Response;
+      try {
+        response = await fetch(`${this.baseUrl}/health`, {
+          headers: { Accept: 'application/json' },
+        });
+      } catch (err) {
+        // If direct fetch fails (e.g. CORS block in browser), try same-origin proxy
+        if (typeof window !== 'undefined' && this.baseUrl && this.baseUrl.startsWith('http')) {
+          response = await fetch('/health', {
+            headers: { Accept: 'application/json' },
+          });
+        } else {
+          throw err;
+        }
+      }
 
       const latencyMs = Math.max(1, Math.round(performance.now() - startTime));
 
