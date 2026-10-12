@@ -98,6 +98,18 @@ src/
 
 ---
 
+### 5. CU-05: Token Budget Governance & Policy Engine
+- **Token Budget & Quota Tracking:** Real-time monitoring of tenant consumption across input and output tokens with high-contrast Neubrutalist visual meters.
+- **Monetary & Limit Thresholds:** Strict tracking of soft-warning triggers and hard caps ($USD or token counts) with dynamic safety gauge meters.
+- **HTTP 402 Payment Required Shield:** Dedicated interceptor and tactile `QuotaExceededModal` with tenant-level upgrade and plan contact actions.
+- **Live Policy Updates:** Real-time mutation form to adjust rate-limits (RPM/TPM) and threshold percentages with immediate feedback.
+
+| Token Budget Governance & Policy Engine Overview | HTTP 402 Quota Exceeded Modal Incident Guard |
+| :---: | :---: |
+| ![Token Budget Governance Overview](docs/assets/cu05_governance_budget_meter_overview.png) | ![HTTP 402 Quota Exceeded Modal](docs/assets/cu05_governance_quota_402_modal.png) |
+
+---
+
 
 ## 📊 Master Traceability Matrix
 
@@ -107,7 +119,7 @@ src/
 | **02** | [`02-cu-02-tenant-isolation.md`](docs/roadmap/02-cu-02-tenant-isolation.md) | **Tenant Selector & Workspace Isolation** | Step 2: Multi-Tenancy | Slice 6 | 🟢 **Validated** |
 | **03** | [`03-cu-03-chat-idempotency.md`](docs/roadmap/03-cu-03-chat-idempotency.md) | **Conversational Console & Idempotency** | Step 3: Idempotency | Slices 1, 2, 5 | 🟢 **Validated** |
 | **04** | [`04-cu-04-outbox-worker-monitor.md`](docs/roadmap/04-cu-04-outbox-worker-monitor.md) | **Outbox Worker & Asynchronous Dispatch** | Step 6: Decoupled Worker | Slice 4 | 🟢 **Validated (PR #2)** |
-| **05** | [`05-cu-05-governance-budget.md`](docs/roadmap/05-cu-05-governance-budget.md) | **Tenant Quotas & Cost Governance** | Step 5: Tenant Governance | Slice 6 | 🟡 In Roadmap |
+| **05** | [`05-cu-05-governance-budget.md`](docs/roadmap/05-cu-05-governance-budget.md) | **Tenant Quotas & Cost Governance** | Step 5: Tenant Governance | Slice 6 | 🟢 **Validated** |
 | **06** | [`06-cu-06-hitl-approvals.md`](docs/roadmap/06-cu-06-hitl-approvals.md) | **Human-in-the-Loop Approvals Center** | Step 8: Tool Calling & HITL | Slice 8 | 🟡 In Roadmap |
 | **07** | [`07-cu-07-hybrid-rag-knowledge.md`](docs/roadmap/07-cu-07-hybrid-rag-knowledge.md) | **Document Ingestion & Hybrid RAG** | Step 7: Knowledge & RAG | Slice 7 | 🟡 In Roadmap |
 | **08** | [`08-cu-08-resilient-sse-streaming.md`](docs/roadmap/08-cu-08-resilient-sse-streaming.md) | **Resilient Real-Time Streaming (SSE)** | Step 4: SSE & Recovery | Slices 2, 5 | 🟡 In Roadmap |
@@ -154,7 +166,7 @@ The visual design language is built using custom Tailwind CSS utility tokens:
 
 Every feature is developed following the **Red-Green-Refactor** TDD workflow with unit and component tests written in **Vitest** and **React Testing Library**:
 
-- **102 Automated Tests** across **33 Test Suites** (100% Passing).
+- **130 Automated Tests** across **42 Test Suites** (100% Passing).
 - **Domain Tests:** Value object validations, invariants, and aggregate behaviors.
 - **Adapter Tests:** Tolerant reader response parsing, error states, and header injections.
 - **Component Tests:** Neubrutalism styling, ARIA roles, click handlers, and modal dismissals.
@@ -193,7 +205,7 @@ Open **[http://localhost:3000](http://localhost:3000)** in your browser.
 | Command | Purpose |
 | :--- | :--- |
 | `npm run dev` | Starts local Next.js development server at `http://localhost:3000` |
-| `npm test` | Runs all 102 Vitest tests across 33 test suites once |
+| `npm test` | Runs all 130 Vitest tests across 42 test suites once |
 | `npm run test:watch` | Runs Vitest in interactive watch mode |
 | `npm run build` | Compiles optimized Next.js production build and checks TypeScript types |
 | `npm start` | Runs the production build server |
