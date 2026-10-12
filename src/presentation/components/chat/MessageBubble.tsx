@@ -1,12 +1,26 @@
 import React from 'react';
 import { Message } from '@/domain/conversations/Message';
+import { DeliveryStatus } from '@/domain/messaging/DeliveryStatus';
+import { MessageDeliveryStatusBadge } from './MessageDeliveryStatusBadge';
 import { Bot, User, Clock, CheckCheck } from 'lucide-react';
 
 export interface MessageBubbleProps {
   message: Message;
+  deliveryStatus?: DeliveryStatus;
+  workerId?: string;
+  queue?: string;
+  errorMessage?: string;
+  onRetryDelivery?: () => void;
 }
 
-export const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
+export const MessageBubble: React.FC<MessageBubbleProps> = ({
+  message,
+  deliveryStatus,
+  workerId,
+  queue,
+  errorMessage,
+  onRetryDelivery,
+}) => {
   const isUser = message.isUser;
   const isOptimistic = message.status === 'optimistic';
 
@@ -48,6 +62,18 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
         <p className="text-sm font-medium leading-relaxed whitespace-pre-wrap select-text">
           {message.content}
         </p>
+
+        {isUser && !isOptimistic && (
+          <div className="mt-2.5 flex justify-end">
+            <MessageDeliveryStatusBadge
+              status={deliveryStatus || 'COMPLETED'}
+              workerId={workerId}
+              queue={queue}
+              errorMessage={errorMessage}
+              onRetry={onRetryDelivery}
+            />
+          </div>
+        )}
       </div>
 
       {isUser && (

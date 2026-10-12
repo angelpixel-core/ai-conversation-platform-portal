@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 import { MessageBubble } from './MessageBubble';
 import { Message } from '@/domain/conversations/Message';
@@ -26,5 +26,23 @@ describe('MessageBubble', () => {
     render(<MessageBubble message={msg} />);
 
     expect(screen.getByText(/Enviando/i)).toBeInTheDocument();
+  });
+
+  it('renders delivery status badge for confirmed user messages', () => {
+    const msg = new Message('4', 'user', 'Pedido confirmado', new Date(), 'confirmed');
+    const onRetry = vi.fn();
+    render(
+      <MessageBubble
+        message={msg}
+        deliveryStatus="FAILED_DLQ"
+        errorMessage="RabbitMQ Timeout"
+        onRetryDelivery={onRetry}
+      />
+    );
+
+    expect(screen.getByText(/RabbitMQ Timeout/i)).toBeInTheDocument();
+    const btn = screen.getByRole('button', { name: /Reintentar/i });
+    fireEvent.click(btn);
+    expect(onRetry).toHaveBeenCalledTimes(1);
   });
 });

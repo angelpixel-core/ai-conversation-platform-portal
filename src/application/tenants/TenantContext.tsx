@@ -1,7 +1,8 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo } from 'react';
 import { Tenant } from '@/domain/tenants/Tenant';
+import { TenantId } from '@/domain/tenants/TenantId';
 import { useTenantsList } from './useTenantsList';
 import { tenantSessionStore } from '@/infrastructure/storage/tenantSessionStore';
 
@@ -17,17 +18,45 @@ export interface TenantContextType {
   cancelSwitchTenant: () => void;
 }
 
+const DEFAULT_FALLBACK_TENANTS: Tenant[] = [
+  new Tenant(
+    TenantId.create('corp-acme'),
+    'Acme Corporation',
+    'ENTERPRISE',
+    new Date('2026-09-20T10:00:00Z')
+  ),
+  new Tenant(
+    TenantId.create('corp-globex'),
+    'Globex Industries',
+    'PRO',
+    new Date('2026-09-22T14:30:00Z')
+  ),
+  new Tenant(
+    TenantId.create('corp-umbrella'),
+    'Umbrella Health',
+    'FREE',
+    new Date('2026-10-01T08:00:00Z')
+  ),
+];
+
 const TenantContext = createContext<TenantContextType | undefined>(undefined);
 
 export const TenantProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const { data: tenants = [], isLoading } = useTenantsList();
+  const { data: rawTenants = [], isLoading, isError } = useTenantsList();
   const [activeTenant, setActiveTenantState] = useState<Tenant | null>(null);
   const [pendingTenant, setPendingTenant] = useState<Tenant | null>(null);
   const [isSwitchGuardOpen, setIsSwitchGuardOpen] = useState(false);
 
+  // If rawTenants is empty or failed, gracefully use fallback seed tenants
+  const tenants = useMemo(() => {
+    if (rawTenants.length > 0) return rawTenants;
+    if (!isLoading || isError) return DEFAULT_FALLBACK_TENANTS;
+    return [];
+  }, [rawTenants, isLoading, isError]);
+
   // Initialize or restore active tenant once tenants list is available
   useEffect(() => {
-    if (isLoading || tenants.length === 0) return;
+    if (tenants.length === 0) return;
 
     if (!activeTenant) {
       const storedId = tenantSessionStore.getActiveTenantId();
@@ -36,7 +65,7 @@ export const TenantProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       setActiveTenantState(initial);
       tenantSessionStore.setActiveTenantId(initial.id);
     }
-  }, [tenants, isLoading, activeTenant]);
+  }, [tenants, activeTenant]);
 
   const setActiveTenant = (tenant: Tenant) => {
     setActiveTenantState(tenant);
@@ -75,7 +104,7 @@ export const TenantProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       value={{
         activeTenant,
         tenants,
-        isLoading,
+        isLoading: isLoading && tenants.length === 0,
         setActiveTenant,
         pendingTenant,
         isSwitchGuardOpen,

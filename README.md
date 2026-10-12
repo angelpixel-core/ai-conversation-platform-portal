@@ -67,7 +67,12 @@ src/
 - **Transparent Context Propagation:** Client-side interceptor automatically injects `X-Tenant-Id: <slug>` into all outgoing business requests.
 - **Cross-Tenant Data Leakage Guard:** `TenantSwitchGuardModal` intercepts workspace changes when active conversational state exists, requiring explicit confirmation to flush volatile memory.
 
+| Organization Selector Dropdown | Data Isolation Guard Modal (`TenantSwitchGuardModal`) |
+| :---: | :---: |
+| ![Tenant Selector Dropdown](docs/assets/cu02_tenant_selector_dropdown.png) | ![Tenant Switch Guard Modal](docs/assets/cu02_tenant_switch_guard_modal.png) |
+
 ---
+
 
 ### 3. CU-03: Conversational Console & Distributed Idempotency
 - **Cryptographic Idempotency Keys:** Every send action generates a unique `UUIDv4` transmitted via the `Idempotency-Key` HTTP header.
@@ -75,7 +80,24 @@ src/
 - **Optimistic UI with Rollback:** User messages appear immediately in the timeline with a visual "in-flight" status; changes roll back cleanly if a network error occurs.
 - **Anti-Double-Submit Protection:** Input fields and mechanical 3D submit buttons lock automatically while mutations are processing.
 
+| Turn Alternation & In-Flight Protection Guard | Completed Multi-Turn Conversation & Delivery Badges |
+| :---: | :---: |
+| ![Turn Alternation & In-Flight Guard](docs/assets/cu03_turn_protection_guard.png) | ![Completed Multi-Turn Conversation](docs/assets/cu03_conversation_completed.png) |
+
 ---
+
+### 4. CU-04: Outbox Worker & Asynchronous Event Broker Monitor
+- **Transactional Outbox Inspection:** Polling MSSQL `outbox_messages` table via atomic locking (`UPDLOCK, READPAST`).
+- **Decoupled Asynchronous Relay:** Event streaming across RabbitMQ exchanges (`conversation.events`) to worker nodes (`worker-node-[1..3]`).
+- **Finite State Machine Pipeline:** Real-time progression tracking (`PENDING_OUTBOX` ➔ `QUEUED_BROKER` ➔ `PROCESSING_WORKER` ➔ `COMPLETED`).
+- **Dead-Letter Queue (DLQ) Incident Recovery:** Simulation of broker/worker timeouts with instant tactile "Reintentar" action and status restoration.
+
+| Outbox Pipeline & Broker Architecture Overview | Dead-Letter Queue (DLQ) Incident & Manual Retry |
+| :---: | :---: |
+| ![Outbox Pipeline Overview](docs/assets/cu04_outbox_pipeline_overview.png) | ![DLQ Incident & Manual Retry](docs/assets/cu04_outbox_dlq_incident_retry.png) |
+
+---
+
 
 ## 📊 Master Traceability Matrix
 
@@ -84,7 +106,7 @@ src/
 | **01** | [`01-cu-01-system-health.md`](docs/roadmap/01-cu-01-system-health.md) | **System Health & Availability Monitor** | Step 1: Health & Docs | Hexagonal Base | 🟢 **Validated** |
 | **02** | [`02-cu-02-tenant-isolation.md`](docs/roadmap/02-cu-02-tenant-isolation.md) | **Tenant Selector & Workspace Isolation** | Step 2: Multi-Tenancy | Slice 6 | 🟢 **Validated** |
 | **03** | [`03-cu-03-chat-idempotency.md`](docs/roadmap/03-cu-03-chat-idempotency.md) | **Conversational Console & Idempotency** | Step 3: Idempotency | Slices 1, 2, 5 | 🟢 **Validated** |
-| **04** | [`04-cu-04-outbox-worker-monitor.md`](docs/roadmap/04-cu-04-outbox-worker-monitor.md) | **Outbox Worker & Asynchronous Dispatch** | Step 6: Decoupled Worker | Slice 4 | 🟡 In Roadmap |
+| **04** | [`04-cu-04-outbox-worker-monitor.md`](docs/roadmap/04-cu-04-outbox-worker-monitor.md) | **Outbox Worker & Asynchronous Dispatch** | Step 6: Decoupled Worker | Slice 4 | 🟢 **Validated (PR #2)** |
 | **05** | [`05-cu-05-governance-budget.md`](docs/roadmap/05-cu-05-governance-budget.md) | **Tenant Quotas & Cost Governance** | Step 5: Tenant Governance | Slice 6 | 🟡 In Roadmap |
 | **06** | [`06-cu-06-hitl-approvals.md`](docs/roadmap/06-cu-06-hitl-approvals.md) | **Human-in-the-Loop Approvals Center** | Step 8: Tool Calling & HITL | Slice 8 | 🟡 In Roadmap |
 | **07** | [`07-cu-07-hybrid-rag-knowledge.md`](docs/roadmap/07-cu-07-hybrid-rag-knowledge.md) | **Document Ingestion & Hybrid RAG** | Step 7: Knowledge & RAG | Slice 7 | 🟡 In Roadmap |
@@ -132,7 +154,7 @@ The visual design language is built using custom Tailwind CSS utility tokens:
 
 Every feature is developed following the **Red-Green-Refactor** TDD workflow with unit and component tests written in **Vitest** and **React Testing Library**:
 
-- **78 Automated Tests** across **26 Test Suites** (100% Passing).
+- **102 Automated Tests** across **33 Test Suites** (100% Passing).
 - **Domain Tests:** Value object validations, invariants, and aggregate behaviors.
 - **Adapter Tests:** Tolerant reader response parsing, error states, and header injections.
 - **Component Tests:** Neubrutalism styling, ARIA roles, click handlers, and modal dismissals.
@@ -171,7 +193,7 @@ Open **[http://localhost:3000](http://localhost:3000)** in your browser.
 | Command | Purpose |
 | :--- | :--- |
 | `npm run dev` | Starts local Next.js development server at `http://localhost:3000` |
-| `npm test` | Runs all 78 Vitest test suites once |
+| `npm test` | Runs all 102 Vitest tests across 33 test suites once |
 | `npm run test:watch` | Runs Vitest in interactive watch mode |
 | `npm run build` | Compiles optimized Next.js production build and checks TypeScript types |
 | `npm start` | Runs the production build server |
@@ -179,6 +201,11 @@ Open **[http://localhost:3000](http://localhost:3000)** in your browser.
 ---
 
 ## 👥 Engineering & Delivery Standards
-- **Branch Strategy:** Feature branches (`feat/01-system-health`, `feat/02-tenant-isolation`, `feat/03-chat-idempotency`) merged into `development`, then promoted to `main`.
+
+- **Branch Strategy:**
+  - `feat/<id>-<slug>` ➔ `development`: Merged via **Squash and Merge** (`--squash`), collapsing iterative WIP commits into a single clean, atomic Conventional Commit.
+  - `development` ➔ `main`: Merged via **Standard Merge Commit** (`--merge`) to maintain exact commit history alignment and prevent branch divergence across release cycles.
+- **Continuous Integration (CI):** Automated GitHub Actions pipeline (`.github/workflows/ci.yml`) validates every PR and push with `npm run build` and `npm test`.
 - **Commit Convention:** Strict [Conventional Commits](https://www.conventionalcommits.org/) (`feat(...)`, `test(...)`, `docs(...)`, `fix(...)`).
-- **Code Standards:** TypeScript strict mode, Clean Architecture layer separation, zero direct coupling between Presentation and Infrastructure.
+- **Full Workflow Specification:** Detailed in [`docs/GIT_WORKFLOW.md`](docs/GIT_WORKFLOW.md).
+
