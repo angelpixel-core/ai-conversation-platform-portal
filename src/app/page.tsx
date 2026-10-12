@@ -8,6 +8,7 @@ import { TenantAvatar } from '@/presentation/components/tenants/TenantAvatar';
 import { ChatConsole } from '@/presentation/components/chat/ChatConsole';
 import { OutboxWorkerMonitorPanel } from '@/presentation/components/outbox/OutboxWorkerMonitorPanel';
 import { GovernanceDashboardPanel } from '@/presentation/components/governance/GovernanceDashboardPanel';
+import { ApprovalsInboxPanel } from '@/presentation/components/approvals/ApprovalsInboxPanel';
 import {
   Activity,
   MessageSquare,
@@ -89,7 +90,7 @@ const USE_CASES: ModuleCardProps[] = [
     title: 'Aprobaciones Human-in-the-Loop',
     description: 'Bandeja de decisiones para acciones sensibles, tool-calling y órdenes de alto valor.',
     icon: <ShieldCheck className="w-6 h-6 stroke-[2.5]" />,
-    status: 'planned',
+    status: 'active',
     bgClass: 'bg-teal-200',
   },
   {
@@ -133,7 +134,7 @@ const USE_CASES: ModuleCardProps[] = [
 export default function Home() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
   const { activeTenant } = useTenant();
-  const [activeTab, setActiveTab] = useState<'modules' | 'chat' | 'outbox' | 'governance'>('chat');
+  const [activeTab, setActiveTab] = useState<'modules' | 'chat' | 'outbox' | 'governance' | 'approvals'>('approvals');
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FFFDF8]">
@@ -234,6 +235,19 @@ export default function Home() {
           </button>
           <button
             type="button"
+            onClick={() => setActiveTab('approvals')}
+            className={`px-5 py-2.5 text-xs sm:text-sm font-black uppercase tracking-wider border-2 border-black transition-all cursor-pointer ${
+              activeTab === 'approvals'
+                ? 'bg-teal-300 text-black shadow-neo -translate-y-1'
+                : 'bg-white text-zinc-700 shadow-neo-xs hover:bg-zinc-100'
+            }`}
+          >
+            <span className="flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4" /> CU-06: Aprobaciones HITL
+            </span>
+          </button>
+          <button
+            type="button"
             onClick={() => setActiveTab('modules')}
             className={`px-5 py-2.5 text-xs sm:text-sm font-black uppercase tracking-wider border-2 border-black transition-all cursor-pointer ${
               activeTab === 'modules'
@@ -279,6 +293,13 @@ export default function Home() {
         {activeTab === 'governance' && (
           <section className="space-y-4">
             <GovernanceDashboardPanel />
+          </section>
+        )}
+
+        {/* Tab 4: HITL Approvals Center Panel */}
+        {activeTab === 'approvals' && (
+          <section className="space-y-4">
+            <ApprovalsInboxPanel />
           </section>
         )}
 
@@ -347,6 +368,7 @@ export default function Home() {
                           if (uc.id === 'cu-03') setActiveTab('chat');
                           if (uc.id === 'cu-04') setActiveTab('outbox');
                           if (uc.id === 'cu-05') setActiveTab('governance');
+                          if (uc.id === 'cu-06') setActiveTab('approvals');
                         }}
                         className="inline-flex items-center gap-1 text-xs font-black uppercase text-black group cursor-pointer hover:underline"
                       >
