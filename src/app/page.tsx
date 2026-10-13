@@ -10,6 +10,7 @@ import { OutboxWorkerMonitorPanel } from '@/presentation/components/outbox/Outbo
 import { GovernanceDashboardPanel } from '@/presentation/components/governance/GovernanceDashboardPanel';
 import { ApprovalsInboxPanel } from '@/presentation/components/approvals/ApprovalsInboxPanel';
 import { KnowledgePanel } from '@/presentation/components/knowledge/KnowledgePanel';
+import { StreamingMonitorPanel } from '@/presentation/components/streaming/StreamingMonitorPanel';
 import {
   Activity,
   MessageSquare,
@@ -109,7 +110,7 @@ const USE_CASES: ModuleCardProps[] = [
     title: 'Streaming Resiliente en Vivo (SSE)',
     description: 'Streaming token-by-token de respuestas LLM con recuperación de desconexiones.',
     icon: <Truck className="w-6 h-6 stroke-[2.5]" />,
-    status: 'planned',
+    status: 'active',
     bgClass: 'bg-indigo-200',
   },
   {
@@ -135,7 +136,7 @@ const USE_CASES: ModuleCardProps[] = [
 export default function Home() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
   const { activeTenant } = useTenant();
-  const [activeTab, setActiveTab] = useState<'modules' | 'chat' | 'outbox' | 'governance' | 'approvals' | 'knowledge'>('knowledge');
+  const [activeTab, setActiveTab] = useState<'modules' | 'chat' | 'outbox' | 'governance' | 'approvals' | 'knowledge' | 'streaming'>('streaming');
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FFFDF8]">
@@ -262,6 +263,19 @@ export default function Home() {
           </button>
           <button
             type="button"
+            onClick={() => setActiveTab('streaming')}
+            className={`px-5 py-2.5 text-xs sm:text-sm font-black uppercase tracking-wider border-2 border-black transition-all cursor-pointer ${
+              activeTab === 'streaming'
+                ? 'bg-indigo-300 text-black shadow-neo -translate-y-1'
+                : 'bg-white text-zinc-700 shadow-neo-xs hover:bg-zinc-100'
+            }`}
+          >
+            <span className="flex items-center gap-2">
+              <Truck className="w-4 h-4" /> CU-08: Streaming en Vivo (SSE)
+            </span>
+          </button>
+          <button
+            type="button"
             onClick={() => setActiveTab('modules')}
             className={`px-5 py-2.5 text-xs sm:text-sm font-black uppercase tracking-wider border-2 border-black transition-all cursor-pointer ${
               activeTab === 'modules'
@@ -324,7 +338,14 @@ export default function Home() {
           </section>
         )}
 
-        {/* Tab 6: 10 Modules Grid */}
+        {/* Tab 6: Resilient Real-Time SSE Streaming */}
+        {activeTab === 'streaming' && (
+          <section className="space-y-4">
+            <StreamingMonitorPanel />
+          </section>
+        )}
+
+        {/* Tab 7: 10 Modules Grid */}
         {activeTab === 'modules' && (
           <section className="space-y-4">
             <div className="flex items-center justify-between">
@@ -391,6 +412,7 @@ export default function Home() {
                           if (uc.id === 'cu-05') setActiveTab('governance');
                           if (uc.id === 'cu-06') setActiveTab('approvals');
                           if (uc.id === 'cu-07') setActiveTab('knowledge');
+                          if (uc.id === 'cu-08') setActiveTab('streaming');
                         }}
                         className="inline-flex items-center gap-1 text-xs font-black uppercase text-black group cursor-pointer hover:underline"
                       >
