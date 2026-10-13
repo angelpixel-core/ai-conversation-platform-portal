@@ -146,6 +146,18 @@ src/
 
 ---
 
+### 9. CU-09: Grafo Visual de Workflows Multi-Agente y Checkpoints (State Graphs & Resumption)
+- **Lienzo de Grafo Multi-Agente 3D (`WorkflowGraphViewer`):** Visualización interactiva y reactiva de los 4 agentes coordinados (Supervisor `#8B5CF6`, Researcher `#3B82F6`, Auditor `#FBBF24`, Synthesizer `#10B981`) con indicadores de handoff en tiempo real.
+- **Autorización Humana en el Bucle (HITL Gate):** Intercepción táctil de flujos en espera de autorización normativa (`PAUSED_FOR_APPROVAL`) con formulario de override del operador (`supervisor_override`) y reanudación limpia hacia el Sintetizador.
+- **Línea de Tiempo de Checkpoints Inmutables (`CheckpointsTimeline`):** Registro cronológico de versiones de memoria persistidas en base de datos con indicador de claves de estado.
+- **Inspección de Snapshots con Time-Travel (`SnapshotInspectorModal`):** Modal de alto contraste con visor JSON resaltado y copiado táctil para auditar el estado exacto de variables en cualquier versión histórica.
+
+| Grafo Multi-Agente & Control de Pausa HITL | Inspección de Snapshot con Time-Travel Debugging |
+| :---: | :---: |
+| ![Multi-Agent Graph Overview](docs/assets/cu09_multi_agent_graph_overview.png) | ![Time-Travel Snapshot Modal](docs/assets/cu09_time_travel_snapshot_modal.png) |
+
+---
+
 ## 📊 Master Traceability Matrix
 
 | ID | Specification Document | Use Case Name | Backend Step | Slice | Status |
@@ -158,7 +170,7 @@ src/
 | **06** | [`06-cu-06-hitl-approvals.md`](docs/roadmap/06-cu-06-hitl-approvals.md) | **Human-in-the-Loop Approvals Center** | Step 8: Tool Calling & HITL | Slice 8 | 🟢 **Validated** |
 | **07** | [`07-cu-07-hybrid-rag-knowledge.md`](docs/roadmap/07-cu-07-hybrid-rag-knowledge.md) | **Document Ingestion & Hybrid RAG** | Step 7: Knowledge & RAG | Slice 7 | 🟢 **Validated** |
 | **08** | [`08-cu-08-resilient-sse-streaming.md`](docs/roadmap/08-cu-08-resilient-sse-streaming.md) | **Resilient Real-Time Streaming (SSE)** | Step 4: SSE & Recovery | Slices 2, 5 | 🟢 **Validated** |
-| **09** | [`09-cu-09-multi-agent-workflows.md`](docs/roadmap/09-cu-09-multi-agent-workflows.md) | **Multi-Agent Workflow State Graph** | Step 9: State Graphs | Slice 9 | 🟡 In Roadmap |
+| **09** | [`09-cu-09-multi-agent-workflows.md`](docs/roadmap/09-cu-09-multi-agent-workflows.md) | **Multi-Agent Workflow State Graph** | Step 9: State Graphs | Slice 9 | 🟢 **Validated** |
 | **10** | [`10-cu-10-ai-guardrails-observability.md`](docs/roadmap/10-cu-10-ai-guardrails-observability.md) | **AI Security Guardrails & Audit Logs** | Step 10: AI Governance | Slice 10 | 🟡 In Roadmap |
 
 ---
@@ -201,7 +213,7 @@ The visual design language is built using custom Tailwind CSS utility tokens:
 
 Every feature is developed following the **Red-Green-Refactor** TDD workflow with unit and component tests written in **Vitest** and **React Testing Library**:
 
-- **215 Automated Tests** across **69 Test Suites** (100% Passing).
+- **251 Automated Tests** across **82 Test Suites** (100% Passing).
 - **Domain Tests:** Value object validations, invariants, and aggregate behaviors.
 - **Adapter Tests:** Tolerant reader response parsing, error states, and header injections.
 - **Component Tests:** Neubrutalism styling, ARIA roles, click handlers, and modal dismissals.
@@ -240,7 +252,7 @@ Open **[http://localhost:3000](http://localhost:3000)** in your browser.
 | Command | Purpose |
 | :--- | :--- |
 | `npm run dev` | Starts local Next.js development server at `http://localhost:3000` |
-| `npm test` | Runs all 215 Vitest tests across 69 test suites once |
+| `npm test` | Runs all 251 Vitest tests across 82 test suites once |
 | `npm run test:watch` | Runs Vitest in interactive watch mode |
 | `npm run build` | Compiles optimized Next.js production build and checks TypeScript types |
 | `npm start` | Runs the production build server |

@@ -11,6 +11,7 @@ import { GovernanceDashboardPanel } from '@/presentation/components/governance/G
 import { ApprovalsInboxPanel } from '@/presentation/components/approvals/ApprovalsInboxPanel';
 import { KnowledgePanel } from '@/presentation/components/knowledge/KnowledgePanel';
 import { StreamingMonitorPanel } from '@/presentation/components/streaming/StreamingMonitorPanel';
+import { WorkflowsDashboardPanel } from '@/presentation/components/workflows/WorkflowsDashboardPanel';
 import {
   Activity,
   MessageSquare,
@@ -119,7 +120,7 @@ const USE_CASES: ModuleCardProps[] = [
     title: 'Grafo de Workflows Multi-Agente',
     description: 'Visualización de estados, checkpoints y toma de decisiones de agentes LangGraph.',
     icon: <Headphones className="w-6 h-6 stroke-[2.5]" />,
-    status: 'planned',
+    status: 'active',
     bgClass: 'bg-orange-200',
   },
   {
@@ -136,7 +137,7 @@ const USE_CASES: ModuleCardProps[] = [
 export default function Home() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
   const { activeTenant } = useTenant();
-  const [activeTab, setActiveTab] = useState<'modules' | 'chat' | 'outbox' | 'governance' | 'approvals' | 'knowledge' | 'streaming'>('streaming');
+  const [activeTab, setActiveTab] = useState<'modules' | 'chat' | 'outbox' | 'governance' | 'approvals' | 'knowledge' | 'streaming' | 'workflows'>('workflows');
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FFFDF8]">
@@ -276,6 +277,19 @@ export default function Home() {
           </button>
           <button
             type="button"
+            onClick={() => setActiveTab('workflows')}
+            className={`px-5 py-2.5 text-xs sm:text-sm font-black uppercase tracking-wider border-2 border-black transition-all cursor-pointer ${
+              activeTab === 'workflows'
+                ? 'bg-orange-300 text-black shadow-neo -translate-y-1'
+                : 'bg-white text-zinc-700 shadow-neo-xs hover:bg-zinc-100'
+            }`}
+          >
+            <span className="flex items-center gap-2">
+              <Headphones className="w-4 h-4" /> CU-09: Workflows Multi-Agente
+            </span>
+          </button>
+          <button
+            type="button"
             onClick={() => setActiveTab('modules')}
             className={`px-5 py-2.5 text-xs sm:text-sm font-black uppercase tracking-wider border-2 border-black transition-all cursor-pointer ${
               activeTab === 'modules'
@@ -342,6 +356,13 @@ export default function Home() {
         {activeTab === 'streaming' && (
           <section className="space-y-4">
             <StreamingMonitorPanel />
+          </section>
+        )}
+
+        {/* Tab 7: Multi-Agent Workflow State Graph */}
+        {activeTab === 'workflows' && (
+          <section className="space-y-4">
+            <WorkflowsDashboardPanel />
           </section>
         )}
 
@@ -413,6 +434,7 @@ export default function Home() {
                           if (uc.id === 'cu-06') setActiveTab('approvals');
                           if (uc.id === 'cu-07') setActiveTab('knowledge');
                           if (uc.id === 'cu-08') setActiveTab('streaming');
+                          if (uc.id === 'cu-09') setActiveTab('workflows');
                         }}
                         className="inline-flex items-center gap-1 text-xs font-black uppercase text-black group cursor-pointer hover:underline"
                       >
