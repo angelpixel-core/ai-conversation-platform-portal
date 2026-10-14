@@ -6,7 +6,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38bdf8?style=flat&logo=tailwind-css)](https://tailwindcss.com/)
 [![Architecture](https://img.shields.io/badge/Architecture-Clean%20%2F%20Hexagonal-amber?style=flat)]()
 [![Design](https://img.shields.io/badge/Design-3D%20Neubrutalism-yellow?style=flat)]()
-[![Tests](https://img.shields.io/badge/Vitest-78%20passed%20(100%25)-emerald?style=flat&logo=vitest)]()
+[![Tests](https://img.shields.io/badge/Vitest-283%20passed%20(100%25)-emerald?style=flat&logo=vitest)]()
 
 ---
 
@@ -158,6 +158,18 @@ src/
 
 ---
 
+### 10. CU-10: Centro de Observabilidad & Guardrails de Seguridad (AI Governance & Telemetry)
+- **Intercepción Determinista de Prompt Injection:** Detección de ataques adversarios (jailbreaks, extracción de prompt de sistema) con respuesta HTTP 400 (`SafetyPolicyViolation`) y banner táctil 3D `IncidentAlertBanner` de alto impacto en rojo.
+- **Redacción y Ofuscación de PII:** Enmascaramiento y sanitización visual en tiempo real de números de tarjeta de crédito (Luhn) y correos confidenciales (`****-****-****-5671`, `[CORREO_OFUSCADO]`).
+- **Trazabilidad Distribuida W3C (OpenTelemetry):** Modal táctil `TelemetryTraceModal` con inspección de cabeceras `X-Trace-ID` y `X-Span-ID`, formateo de especificación `traceparent` (`00-{trace}-{span}-01`) y copiado directo para herramientas forenses (Jaeger/Zipkin/Datadog).
+- **Simulador Interactivo de Ataques Adversarios:** Consola interactiva para disparar ataques controlados (Jailbreak, Fuga de Tarjeta, Contenido Tóxico) con actualización reactiva de las tarjetas estadísticas de gobernanza y latencia P99 (< 10ms).
+
+| Consola de Guardrails & Auditoría Forense | Modal Inspector de Trazas W3C OpenTelemetry |
+| :---: | :---: |
+| ![Guardrails Console Overview](docs/assets/cu10_guardrails_console_overview.png) | ![OpenTelemetry Trace Modal](docs/assets/cu10_opentelemetry_trace_modal.png) |
+
+---
+
 ## 📊 Master Traceability Matrix
 
 | ID | Specification Document | Use Case Name | Backend Step | Slice | Status |
@@ -171,7 +183,7 @@ src/
 | **07** | [`07-cu-07-hybrid-rag-knowledge.md`](docs/roadmap/07-cu-07-hybrid-rag-knowledge.md) | **Document Ingestion & Hybrid RAG** | Step 7: Knowledge & RAG | Slice 7 | 🟢 **Validated** |
 | **08** | [`08-cu-08-resilient-sse-streaming.md`](docs/roadmap/08-cu-08-resilient-sse-streaming.md) | **Resilient Real-Time Streaming (SSE)** | Step 4: SSE & Recovery | Slices 2, 5 | 🟢 **Validated** |
 | **09** | [`09-cu-09-multi-agent-workflows.md`](docs/roadmap/09-cu-09-multi-agent-workflows.md) | **Multi-Agent Workflow State Graph** | Step 9: State Graphs | Slice 9 | 🟢 **Validated** |
-| **10** | [`10-cu-10-ai-guardrails-observability.md`](docs/roadmap/10-cu-10-ai-guardrails-observability.md) | **AI Security Guardrails & Audit Logs** | Step 10: AI Governance | Slice 10 | 🟡 In Roadmap |
+| **10** | [`10-cu-10-ai-guardrails-observability.md`](docs/roadmap/10-cu-10-ai-guardrails-observability.md) | **AI Security Guardrails & Audit Logs** | Step 10: AI Governance | Slice 10 | 🟢 **Validated** |
 
 ---
 
@@ -213,7 +225,7 @@ The visual design language is built using custom Tailwind CSS utility tokens:
 
 Every feature is developed following the **Red-Green-Refactor** TDD workflow with unit and component tests written in **Vitest** and **React Testing Library**:
 
-- **251 Automated Tests** across **82 Test Suites** (100% Passing).
+- **283 Automated Tests** across **92 Test Suites** (100% Passing).
 - **Domain Tests:** Value object validations, invariants, and aggregate behaviors.
 - **Adapter Tests:** Tolerant reader response parsing, error states, and header injections.
 - **Component Tests:** Neubrutalism styling, ARIA roles, click handlers, and modal dismissals.
@@ -252,7 +264,7 @@ Open **[http://localhost:3000](http://localhost:3000)** in your browser.
 | Command | Purpose |
 | :--- | :--- |
 | `npm run dev` | Starts local Next.js development server at `http://localhost:3000` |
-| `npm test` | Runs all 251 Vitest tests across 82 test suites once |
+| `npm test` | Runs all 283 Vitest tests across 92 test suites once |
 | `npm run test:watch` | Runs Vitest in interactive watch mode |
 | `npm run build` | Compiles optimized Next.js production build and checks TypeScript types |
 | `npm start` | Runs the production build server |

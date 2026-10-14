@@ -12,6 +12,7 @@ import { ApprovalsInboxPanel } from '@/presentation/components/approvals/Approva
 import { KnowledgePanel } from '@/presentation/components/knowledge/KnowledgePanel';
 import { StreamingMonitorPanel } from '@/presentation/components/streaming/StreamingMonitorPanel';
 import { WorkflowsDashboardPanel } from '@/presentation/components/workflows/WorkflowsDashboardPanel';
+import { GuardrailsConsolePanel } from '@/presentation/components/governance/GuardrailsConsolePanel';
 import {
   Activity,
   MessageSquare,
@@ -127,17 +128,17 @@ const USE_CASES: ModuleCardProps[] = [
     id: 'cu-10',
     code: 'CU-10',
     title: 'Auditoría & Observabilidad de Guardrails',
-    description: 'Trazas de auditoría estructuradas, inspección de payloads y análisis de seguridad.',
-    icon: <FileText className="w-6 h-6 stroke-[2.5]" />,
-    status: 'planned',
-    bgClass: 'bg-zinc-200',
+    description: 'Intercepción de Prompt Injection, ofuscación de PII y telemetría distribuida W3C.',
+    icon: <ShieldAlert className="w-6 h-6 stroke-[2.5]" />,
+    status: 'active',
+    bgClass: 'bg-rose-200',
   },
 ];
 
 export default function Home() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
   const { activeTenant } = useTenant();
-  const [activeTab, setActiveTab] = useState<'modules' | 'chat' | 'outbox' | 'governance' | 'approvals' | 'knowledge' | 'streaming' | 'workflows'>('workflows');
+  const [activeTab, setActiveTab] = useState<'modules' | 'chat' | 'outbox' | 'governance' | 'approvals' | 'knowledge' | 'streaming' | 'workflows' | 'guardrails'>('guardrails');
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FFFDF8]">
@@ -290,6 +291,19 @@ export default function Home() {
           </button>
           <button
             type="button"
+            onClick={() => setActiveTab('guardrails')}
+            className={`px-5 py-2.5 text-xs sm:text-sm font-black uppercase tracking-wider border-2 border-black transition-all cursor-pointer ${
+              activeTab === 'guardrails'
+                ? 'bg-rose-400 text-black shadow-neo -translate-y-1'
+                : 'bg-white text-zinc-700 shadow-neo-xs hover:bg-zinc-100'
+            }`}
+          >
+            <span className="flex items-center gap-2">
+              <ShieldAlert className="w-4 h-4" /> CU-10: Guardrails & Observabilidad
+            </span>
+          </button>
+          <button
+            type="button"
             onClick={() => setActiveTab('modules')}
             className={`px-5 py-2.5 text-xs sm:text-sm font-black uppercase tracking-wider border-2 border-black transition-all cursor-pointer ${
               activeTab === 'modules'
@@ -366,7 +380,14 @@ export default function Home() {
           </section>
         )}
 
-        {/* Tab 7: 10 Modules Grid */}
+        {/* Tab 8: AI Guardrails & OpenTelemetry Observability */}
+        {activeTab === 'guardrails' && (
+          <section className="space-y-4">
+            <GuardrailsConsolePanel />
+          </section>
+        )}
+
+        {/* Tab 9: 10 Modules Grid */}
         {activeTab === 'modules' && (
           <section className="space-y-4">
             <div className="flex items-center justify-between">
@@ -435,6 +456,7 @@ export default function Home() {
                           if (uc.id === 'cu-07') setActiveTab('knowledge');
                           if (uc.id === 'cu-08') setActiveTab('streaming');
                           if (uc.id === 'cu-09') setActiveTab('workflows');
+                          if (uc.id === 'cu-10') setActiveTab('guardrails');
                         }}
                         className="inline-flex items-center gap-1 text-xs font-black uppercase text-black group cursor-pointer hover:underline"
                       >
