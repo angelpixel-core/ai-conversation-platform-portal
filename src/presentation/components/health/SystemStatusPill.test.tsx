@@ -28,4 +28,20 @@ describe('SystemStatusPill (Presentation Component)', () => {
     fireEvent.click(screen.getByRole('button'));
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
+
+  it('renders LIVE badge when mode is LIVE', () => {
+    const health = new SystemHealth('HEALTHY', 12, new Date(), [], { mode: 'LIVE' });
+    render(<SystemStatusPill health={health} />);
+
+    expect(screen.getByText('LIVE')).toBeInTheDocument();
+    expect(screen.getByText('12ms')).toBeInTheDocument();
+  });
+
+  it('renders MOCK badge when mode is MOCK', () => {
+    const health = new SystemHealth('HEALTHY', 10, new Date(), [], { mode: 'MOCK' });
+    render(<SystemStatusPill health={health} />);
+
+    expect(screen.getByText('MOCK')).toBeInTheDocument();
+  });
 });
+

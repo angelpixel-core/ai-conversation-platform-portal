@@ -19,39 +19,57 @@ export const SystemStatusPill: React.FC<SystemStatusPillProps> = ({ health, onCl
     ? 'SIN CONEXIÓN'
     : 'VERIFICANDO...';
 
-  const bgClasses = isHealthy
-    ? 'bg-emerald-100 text-emerald-950 dark:bg-emerald-950/40 dark:text-emerald-200'
-    : isDegraded
-    ? 'bg-amber-100 text-amber-950 dark:bg-amber-950/40 dark:text-amber-200'
-    : isDown
-    ? 'bg-red-100 text-red-950 dark:bg-red-950/40 dark:text-red-200'
-    : 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200';
-
-  const dotClasses = isHealthy
-    ? 'bg-[#10B981] animate-pulse'
-    : isDegraded
-    ? 'bg-[#F59E0B] animate-pulse'
-    : isDown
-    ? 'bg-[#EF4444]'
-    : 'bg-[#64748B]';
+  const isLive = health.mode === 'LIVE';
 
   return (
     <button
       type="button"
       onClick={onClick}
-      aria-label={`Estado del sistema: ${statusText} (${health.latencyMs}ms)`}
-      className={`inline-flex items-center gap-2 px-3 py-1.5 text-xs font-black uppercase tracking-wider rounded border-2 border-black dark:border-white shadow-neo-sm transition-all hover:-translate-y-0.5 hover:shadow-neo active:translate-x-0.5 active:translate-y-0.5 active:shadow-none cursor-pointer select-none ${bgClasses}`}
+      aria-label={`Estado del sistema: ${statusText} (${health.latencyMs}ms, Modo ${health.mode})`}
+      className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-black uppercase tracking-wider rounded border-2 border-black dark:border-white bg-white dark:bg-zinc-900 text-black dark:text-white shadow-neo-sm hover:shadow-neo hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all cursor-pointer select-none group"
     >
+      {/* Beacon dot */}
+      <span className="relative flex h-2.5 w-2.5 items-center justify-center">
+        {isHealthy && (
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+        )}
+        <span
+          className={`relative inline-flex rounded-full h-2 w-2 border border-black dark:border-white ${
+            isHealthy
+              ? 'bg-emerald-500'
+              : isDegraded
+              ? 'bg-amber-500'
+              : isDown
+              ? 'bg-rose-500'
+              : 'bg-zinc-400'
+          }`}
+        />
+      </span>
+
+      {/* Main Status Text */}
+      <span className="font-extrabold tracking-tight">{statusText}</span>
+
+      {/* Origin / Mode Badge */}
       <span
-        aria-hidden="true"
-        className={`w-2.5 h-2.5 rounded-full border border-black dark:border-white shrink-0 ${dotClasses}`}
-      />
-      <span>{statusText}</span>
-      {health.latencyMs > 0 && isHealthy && (
-        <span aria-hidden="true" className="font-mono text-[10px] opacity-75">
+        className={`px-1.5 py-0.5 text-[10px] font-mono font-black rounded border border-black dark:border-zinc-700 ${
+          isLive
+            ? 'bg-blue-200 text-blue-950 dark:bg-blue-900/60 dark:text-blue-200'
+            : 'bg-amber-200 text-amber-950 dark:bg-amber-900/60 dark:text-amber-200'
+        }`}
+      >
+        {isLive ? 'LIVE' : 'MOCK'}
+      </span>
+
+      {/* Latency Pill */}
+      {health.latencyMs > 0 && !isDown && (
+        <span
+          className="font-mono text-[10px] font-bold px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-300 dark:border-zinc-700"
+          title={`Calidad de conexión: ${health.latencyQuality}`}
+        >
           {health.latencyMs}ms
         </span>
       )}
     </button>
   );
 };
+

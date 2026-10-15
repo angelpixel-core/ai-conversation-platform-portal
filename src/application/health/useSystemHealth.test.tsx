@@ -37,4 +37,22 @@ describe('useSystemHealth hook', () => {
     expect(result.current.data?.status).toBe('HEALTHY');
     expect(result.current.data?.latencyMs).toBe(15);
   });
+
+  it('updates mode reactively with useRuntimeEnvironment', async () => {
+    const { useRuntimeEnvironment } = await import('./useSystemHealth');
+    const { result } = renderHook(() => useRuntimeEnvironment());
+
+    expect(['LIVE', 'MOCK']).toContain(result.current[0]);
+
+    const initial = result.current[0];
+    const target = initial === 'LIVE' ? 'MOCK' : 'LIVE';
+
+    const { act } = await import('@testing-library/react');
+    act(() => {
+      result.current[1](target);
+    });
+
+    expect(result.current[0]).toBe(target);
+  });
 });
+

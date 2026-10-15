@@ -23,9 +23,14 @@ describe('HttpHealthAdapter', () => {
     const health = await adapter.getHealth();
 
     expect(health.status).toBe('HEALTHY');
-    expect(health.components).toHaveLength(1);
-    expect(health.components[0].name).toBe('api');
+    expect(health.mode).toBe('LIVE');
+    expect(health.isRFC31Compliant).toBe(false);
+    expect(health.rawPayload).toEqual({ status: 'ok' });
+    expect(health.components).toHaveLength(3);
+    expect(health.components[0].name).toBe('FastAPI Engine');
     expect(health.components[0].status).toBe('HEALTHY');
+    expect(health.components[1].name).toBe('SQL Server (MSSQL)');
+    expect(health.components[2].name).toBe('RabbitMQ Broker');
   });
 
   it('parses RFC-01 rich payload with database and broker checks', async () => {
@@ -45,6 +50,8 @@ describe('HttpHealthAdapter', () => {
     const health = await adapter.getHealth();
 
     expect(health.status).toBe('HEALTHY');
+    expect(health.mode).toBe('LIVE');
+    expect(health.isRFC31Compliant).toBe(true);
     expect(health.components).toHaveLength(2);
     expect(health.components.find((c) => c.name === 'database')?.latencyMs).toBe(12);
     expect(health.components.find((c) => c.name === 'broker')?.message).toBe('RabbitMQ connected');

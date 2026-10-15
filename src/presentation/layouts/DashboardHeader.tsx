@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useSystemHealth } from '@/application/health/useSystemHealth';
+import { useSystemHealth, useRuntimeEnvironment } from '@/application/health/useSystemHealth';
 import { useTenant } from '@/application/tenants/TenantContext';
 import { useConversation, CONVERSATION_QUERY_KEY } from '@/application/conversations/useConversation';
 import { useQueryClient } from '@tanstack/react-query';
@@ -15,6 +15,7 @@ import { Bot, Layers } from 'lucide-react';
 export const DashboardHeader: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const queryClient = useQueryClient();
+  const [runtimeMode, toggleRuntimeMode] = useRuntimeEnvironment();
   const { data: healthData, isLoading: isHealthLoading, isError: isHealthError, refetch, isFetching } = useSystemHealth();
   const {
     activeTenant,
@@ -30,15 +31,18 @@ export const DashboardHeader: React.FC = () => {
   const { data: conversation } = useConversation('conv-cloud-1');
   const hasActiveConversation = (conversation?.messages?.length ?? 0) > 0;
 
-  const isMockMode = process.env.NEXT_PUBLIC_USE_MOCKS === 'true';
-
   const health =
     healthData ??
     (isHealthLoading
-      ? new SystemHealth('CHECKING', 0, new Date())
+      ? new SystemHealth('CHECKING', 0, new Date(), [], { mode: runtimeMode })
       : isHealthError
-      ? new SystemHealth('DOWN', 0, new Date(), [{ name: 'api', status: 'DOWN', message: 'Failed to connect' }])
-      : new SystemHealth('CHECKING', 0, new Date()));
+      ? new SystemHealth('DOWN', 0, new Date(), [{ name: 'api', status: 'DOWN', message: 'Failed to connect' }], { mode: runtimeMode })
+      : new SystemHealth('CHECKING', 0, new Date(), [], { mode: runtimeMode }));
+
+  const handleToggleMode = () => {
+    toggleRuntimeMode();
+    queryClient.invalidateQueries({ queryKey: ['system-health'] });
+  };
 
   return (
     <>
@@ -73,14 +77,20 @@ export const DashboardHeader: React.FC = () => {
             isLoading={isTenantLoading}
           />
 
-          {/* Mock / Live indicator */}
-          <span
-            className={`px-2 py-1 text-[11px] font-black uppercase tracking-wider border-2 border-black shadow-neo-sm ${
-              isMockMode ? 'bg-purple-300 text-purple-950' : 'bg-emerald-300 text-emerald-950'
+          {/* Mock / Live Toggle button */}
+          <button
+            type="button"
+            onClick={handleToggleMode}
+            aria-label={`Modo de ejecución: ${runtimeMode}. Clic para alternar.`}
+            title="Haz clic para alternar entre LIVE y MOCK"
+            className={`px-2.5 py-1 text-[11px] font-black uppercase tracking-wider border-2 border-black shadow-neo-sm hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none active:scale-95 transition-all cursor-pointer ${
+              runtimeMode === 'LIVE'
+                ? 'bg-blue-400 text-white'
+                : 'bg-purple-300 text-purple-950'
             }`}
           >
-            {isMockMode ? 'MOCK MODE' : 'LIVE API'}
-          </span>
+            {runtimeMode === 'LIVE' ? 'LIVE (8000)' : 'MOCK MODE'}
+          </button>
 
           {/* System Health Pill */}
           <SystemStatusPill health={health} onClick={() => setIsModalOpen(true)} />
@@ -94,6 +104,7 @@ export const DashboardHeader: React.FC = () => {
         onClose={() => setIsModalOpen(false)}
         onRefresh={() => refetch()}
         isRefreshing={isFetching}
+        onToggleMode={handleToggleMode}
       />
 
       {/* Tenant Switch Guard Modal */}
