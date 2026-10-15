@@ -60,4 +60,21 @@ describe('DashboardHeader', () => {
     expect(screen.getByRole('dialog')).toBeInTheDocument();
     expect(screen.getByText(/Diagnóstico del Sistema/i)).toBeInTheDocument();
   });
+
+  it('toggles mode when clicking the mode toggle button', async () => {
+    vi.spyOn(container.healthGateway, 'getHealth').mockResolvedValue(
+      new SystemHealth('HEALTHY', 25, new Date())
+    );
+    const user = userEvent.setup();
+
+    renderWithClient(<DashboardHeader />);
+
+    const modeBtn = await screen.findByRole('button', { name: /Modo de ejecución/i });
+    expect(modeBtn).toBeInTheDocument();
+    await user.click(modeBtn);
+
+    const updatedModeBtn = await screen.findByRole('button', { name: /Modo de ejecución/i });
+    expect(updatedModeBtn).toBeInTheDocument();
+  });
 });
+

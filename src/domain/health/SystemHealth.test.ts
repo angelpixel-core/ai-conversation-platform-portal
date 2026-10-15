@@ -9,12 +9,39 @@ describe('SystemHealth (Domain Entity)', () => {
     ];
     const checkedAt = new Date();
 
-    const health = new SystemHealth('HEALTHY', 45, checkedAt, components);
+    const health = new SystemHealth('HEALTHY', 45, checkedAt, components, {
+      mode: 'LIVE',
+      rawPayload: { status: 'ok' },
+      serverVersion: '1.0.0',
+      isRFC31Compliant: false,
+    });
 
     expect(health.status).toBe('HEALTHY');
     expect(health.latencyMs).toBe(45);
     expect(health.checkedAt).toBe(checkedAt);
     expect(health.components).toHaveLength(2);
+    expect(health.mode).toBe('LIVE');
+    expect(health.rawPayload).toEqual({ status: 'ok' });
+    expect(health.serverVersion).toBe('1.0.0');
+    expect(health.isRFC31Compliant).toBe(false);
+  });
+
+  it('should evaluate latencyQuality and latencyQualityColor correctly', () => {
+    const excellent = new SystemHealth('HEALTHY', 24, new Date());
+    expect(excellent.latencyQuality).toBe('EXCELLENT');
+    expect(excellent.latencyQualityColor).toBe('#10B981');
+
+    const good = new SystemHealth('HEALTHY', 120, new Date());
+    expect(good.latencyQuality).toBe('GOOD');
+    expect(good.latencyQualityColor).toBe('#F59E0B');
+
+    const poor = new SystemHealth('DEGRADED', 350, new Date());
+    expect(poor.latencyQuality).toBe('POOR');
+    expect(poor.latencyQualityColor).toBe('#EF4444');
+
+    const down = new SystemHealth('DOWN', 0, new Date());
+    expect(down.latencyQuality).toBe('POOR');
+    expect(down.latencyQualityColor).toBe('#EF4444');
   });
 
   it('should return isOperational true for HEALTHY and DEGRADED statuses', () => {

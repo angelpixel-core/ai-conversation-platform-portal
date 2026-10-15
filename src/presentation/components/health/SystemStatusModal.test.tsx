@@ -58,4 +58,61 @@ describe('SystemStatusModal', () => {
     await user.keyboard('{Escape}');
     expect(handleClose).toHaveBeenCalledTimes(2);
   });
+
+  it('renders mode switch and allows toggling', async () => {
+    const handleToggle = vi.fn();
+    const user = userEvent.setup();
+
+    render(
+      <SystemStatusModal
+        isOpen={true}
+        health={healthySystem}
+        onClose={vi.fn()}
+        onToggleMode={handleToggle}
+      />
+    );
+
+    const mockBtn = screen.getByRole('button', { name: /MOCK/i });
+    await user.click(mockBtn);
+    expect(handleToggle).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders latency quality and RFC-31 badge', () => {
+    const rfcCompliantHealth = new SystemHealth('HEALTHY', 25, new Date(), [], {
+      mode: 'LIVE',
+      isRFC31Compliant: true,
+      rawPayload: { status: 'healthy', checks: {} },
+    });
+
+    render(
+      <SystemStatusModal isOpen={true} health={rfcCompliantHealth} onClose={vi.fn()} />
+    );
+
+    expect(screen.getByText(/Óptima/i)).toBeInTheDocument();
+    expect(screen.getByText(/RFC-31: CUMPLIDO/i)).toBeInTheDocument();
+  });
+
+  it('toggles raw JSON inspector and copies payload', async () => {
+    const user = userEvent.setup();
+    const writeTextSpy = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText: writeTextSpy },
+      configurable: true,
+      writable: true,
+    });
+
+    render(
+      <SystemStatusModal isOpen={true} health={healthySystem} onClose={vi.fn()} />
+    );
+
+    const toggleJsonBtn = screen.getByRole('button', { name: /Payload HTTP en Vivo/i });
+    await user.click(toggleJsonBtn);
+
+    expect(screen.getByText(/Ocultar/i)).toBeInTheDocument();
+
+    const copyBtn = screen.getByRole('button', { name: /Copiar JSON/i });
+    await user.click(copyBtn);
+    expect(writeTextSpy).toHaveBeenCalled();
+  });
 });
+
