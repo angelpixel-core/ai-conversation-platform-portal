@@ -9,9 +9,9 @@ interface TenantTierBadgeProps {
 export const TenantTierBadge: React.FC<TenantTierBadgeProps> = ({ tier, className = '' }) => {
   const colorClasses =
     tier === 'ENTERPRISE'
-      ? 'bg-[#FBBF24] text-black border-black'
-      : tier === 'PRO'
-      ? 'bg-sky-300 text-black border-black'
+      ? 'bg-[#FBBF24] text-amber-950 border-black'
+      : tier === 'STANDARD' || tier === 'PRO'
+      ? 'bg-sky-300 text-sky-950 border-black'
       : 'bg-slate-200 text-slate-800 border-black';
 
   return (
@@ -22,3 +22,4 @@ export const TenantTierBadge: React.FC<TenantTierBadgeProps> = ({ tier, classNam
     </span>
   );
 };
+

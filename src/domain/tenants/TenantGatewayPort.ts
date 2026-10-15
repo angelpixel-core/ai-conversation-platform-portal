@@ -5,6 +5,7 @@ export interface CreateTenantInput {
   id: string;
   name: string;
   tier: TenantTier;
+  balanceUsd?: string;
   initialBudgetUsd?: string;
 }
 

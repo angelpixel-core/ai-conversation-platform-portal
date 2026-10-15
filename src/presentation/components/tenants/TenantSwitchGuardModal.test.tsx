@@ -64,4 +64,28 @@ describe('TenantSwitchGuardModal', () => {
     await user.click(confirmBtn);
     expect(onConfirm).toHaveBeenCalledTimes(1);
   });
+
+  it('renders comparative financial balances when present', () => {
+    const tenantWithBalance1 = new Tenant(TenantId.create('corp-acme'), 'Acme Corp', 'STANDARD', {
+      balance: '1000.0000',
+      currency: 'USD',
+    });
+    const tenantWithBalance2 = new Tenant(TenantId.create('corp-globex'), 'Globex Corp', 'ENTERPRISE', {
+      balance: '5000.0000',
+      currency: 'USD',
+    });
+
+    render(
+      <TenantSwitchGuardModal
+        isOpen={true}
+        currentTenant={tenantWithBalance1}
+        targetTenant={tenantWithBalance2}
+        onConfirm={vi.fn()}
+        onCancel={vi.fn()}
+      />
+    );
+
+    expect(screen.getByText('$1,000.00 USD')).toBeInTheDocument();
+    expect(screen.getByText('$5,000.00 USD')).toBeInTheDocument();
+  });
 });
