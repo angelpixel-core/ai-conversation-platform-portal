@@ -18,6 +18,13 @@ describe('TenantTierBadge', () => {
     expect(badge).toHaveClass('bg-sky-300');
   });
 
+  it('renders STANDARD tier with cyan/sky styling', () => {
+    render(<TenantTierBadge tier="STANDARD" />);
+    const badge = screen.getByText('STANDARD');
+    expect(badge).toBeInTheDocument();
+    expect(badge).toHaveClass('bg-sky-300');
+  });
+
   it('renders FREE tier with slate styling', () => {
     render(<TenantTierBadge tier="FREE" />);
     const badge = screen.getByText('FREE');
@@ -25,3 +32,4 @@ describe('TenantTierBadge', () => {
     expect(badge).toHaveClass('bg-slate-200');
   });
 });
+

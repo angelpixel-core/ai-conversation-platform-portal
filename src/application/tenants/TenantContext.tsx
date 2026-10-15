@@ -23,19 +23,22 @@ const DEFAULT_FALLBACK_TENANTS: Tenant[] = [
     TenantId.create('corp-acme'),
     'Acme Corporation',
     'ENTERPRISE',
-    new Date('2026-09-20T10:00:00Z')
+    new Date('2026-09-20T10:00:00Z'),
+    { status: 'ACTIVE', balance: '5000.0000', currency: 'USD' }
   ),
   new Tenant(
     TenantId.create('corp-globex'),
     'Globex Industries',
-    'PRO',
-    new Date('2026-09-22T14:30:00Z')
+    'STANDARD',
+    new Date('2026-09-22T14:30:00Z'),
+    { status: 'ACTIVE', balance: '1000.0000', currency: 'USD' }
   ),
   new Tenant(
     TenantId.create('corp-umbrella'),
     'Umbrella Health',
     'FREE',
-    new Date('2026-10-01T08:00:00Z')
+    new Date('2026-10-01T08:00:00Z'),
+    { status: 'ACTIVE', balance: '150.0000', currency: 'USD' }
   ),
 ];
 
@@ -58,12 +61,20 @@ export const TenantProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   useEffect(() => {
     if (tenants.length === 0) return;
 
+    const storedId = tenantSessionStore.getActiveTenantId();
+    const matchedStored = storedId ? tenants.find((t) => t.id.equals(storedId)) : null;
+
     if (!activeTenant) {
-      const storedId = tenantSessionStore.getActiveTenantId();
-      const matched = storedId ? tenants.find((t) => t.id.equals(storedId)) : null;
-      const initial = matched ?? tenants[0];
+      const initial = matchedStored ?? tenants[0];
       setActiveTenantState(initial);
       tenantSessionStore.setActiveTenantId(initial.id);
+    } else {
+      const currentInList = tenants.find((t) => t.id.equals(activeTenant.id));
+      if (!currentInList) {
+        const next = matchedStored ?? tenants[0];
+        setActiveTenantState(next);
+        tenantSessionStore.setActiveTenantId(next.id);
+      }
     }
   }, [tenants, activeTenant]);
 

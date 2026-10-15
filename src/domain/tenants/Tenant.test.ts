@@ -31,4 +31,35 @@ describe('Tenant Entity', () => {
     expect(tPro.isEnterprise).toBe(false);
     expect(tFree.isEnterprise).toBe(false);
   });
+
+  it('supports STANDARD tier, financial balances and formattedBalance helper', () => {
+    const t = new Tenant(TenantId.create('corp-acme'), 'ACME Corp', 'STANDARD', new Date(), {
+      status: 'ACTIVE',
+      balance: '1000.0000',
+      currency: 'USD',
+    });
+
+    expect(t.isStandard).toBe(true);
+    expect(t.isActive).toBe(true);
+    expect(t.balance).toBe('1000.0000');
+    expect(t.formattedBalance).toBe('$1,000.00 USD');
+  });
+
+  it('formats tenant tier labels and returns correct Neubrutalism colors', async () => {
+    const { formatTenantTier, getTenantTierColor } = await import('./TenantTier');
+
+    expect(formatTenantTier('ENTERPRISE')).toBe('Enterprise');
+    expect(formatTenantTier('STANDARD')).toBe('Standard');
+    expect(formatTenantTier('PRO')).toBe('Pro');
+    expect(formatTenantTier('FREE')).toBe('Free');
+
+    const entColor = getTenantTierColor('ENTERPRISE');
+    expect(entColor.bg).toContain('amber');
+
+    const stdColor = getTenantTierColor('STANDARD');
+    expect(stdColor.bg).toContain('sky');
+
+    const freeColor = getTenantTierColor('FREE');
+    expect(freeColor.bg).toContain('zinc');
+  });
 });
