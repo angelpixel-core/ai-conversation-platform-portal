@@ -19,9 +19,9 @@ describe('ConversationAggregate', () => {
     const conv = new ConversationAggregate(ConversationId.create('conv-101'), 'Test', []);
     const key = IdempotencyKey.generate();
 
-    const userMsg = conv.appendUserMessage('Hola, quiero ordenar un café', key);
+    const userMsg = conv.appendUserMessage('Calcular presupuesto de infraestructura cloud.', key);
     expect(userMsg.role).toBe('user');
-    expect(userMsg.content).toBe('Hola, quiero ordenar un café');
+    expect(userMsg.content).toBe('Calcular presupuesto de infraestructura cloud.');
     expect(userMsg.idempotencyKey).toBe(key.value);
     expect(conv.messages).toHaveLength(1);
 
@@ -35,7 +35,7 @@ describe('ConversationAggregate', () => {
   it('allows user to send message after assistant replies', () => {
     const conv = new ConversationAggregate(ConversationId.create('conv-101'), 'Test', []);
     conv.appendUserMessage('Hola', IdempotencyKey.generate());
-    conv.appendAssistantMessage('¡Hola! ¿Qué café te gustaría hoy?');
+    conv.appendAssistantMessage('¡Hola! Bienvenido a la plataforma. ¿En qué puedo asistirte hoy?');
 
     expect(conv.canAppendUserMessage).toBe(true);
     expect(conv.messages).toHaveLength(2);
@@ -46,8 +46,8 @@ describe('ConversationAggregate', () => {
     const conv = new ConversationAggregate(ConversationId.create('conv-101'), 'Test', []);
     const key = IdempotencyKey.generate();
 
-    const firstMsg = conv.appendUserMessage('Quiero un Cappuccino', key);
-    const replayMsg = conv.appendUserMessage('Quiero un Cappuccino', key);
+    const firstMsg = conv.appendUserMessage('Consultar política de seguridad', key);
+    const replayMsg = conv.appendUserMessage('Consultar política de seguridad', key);
 
     expect(conv.messages).toHaveLength(1);
     expect(replayMsg.id).toBe(firstMsg.id);

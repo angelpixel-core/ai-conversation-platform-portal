@@ -28,7 +28,7 @@ describe('StreamingMonitorPanel Component', () => {
       { timeout: 3000 }
     );
 
-    expect(screen.getByText(/espresso/i)).toBeInTheDocument();
+    expect(screen.getByText(/infraestructura cloud/i)).toBeInTheDocument();
   });
 
   it('shows recovery banner when network drop is simulated', async () => {

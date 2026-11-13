@@ -47,7 +47,7 @@ describe('MockKnowledgeGateway Infrastructure', () => {
 
   it('provides verified citations for hybrid search queries', async () => {
     const gateway = new MockKnowledgeGateway();
-    const citations = await gateway.getCitationsForQuery('corp-acme', 'temperatura del agua para espresso');
+    const citations = await gateway.getCitationsForQuery('corp-acme', 'escalado de infraestructura cloud');
 
     expect(citations.length).toBeGreaterThan(0);
     expect(citations[0].documentName).toBeDefined();

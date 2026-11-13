@@ -10,25 +10,18 @@ export interface MockStreamingGatewayOptions {
 }
 
 const DEFAULT_SEED_TOKENS = [
-  { sequenceId: 1, text: 'Para ' },
-  { sequenceId: 2, text: 'un ' },
-  { sequenceId: 3, text: 'espresso ' },
-  { sequenceId: 4, text: 'perfecto, ' },
-  { sequenceId: 5, text: 'utilizamos ' },
-  { sequenceId: 6, text: '18g ' },
-  { sequenceId: 7, text: 'de ' },
-  { sequenceId: 8, text: 'café ' },
-  { sequenceId: 9, text: 'Geisha ' },
-  { sequenceId: 10, text: 'molienda ' },
-  { sequenceId: 11, text: 'fina ' },
-  { sequenceId: 12, text: 'a ' },
-  { sequenceId: 13, text: '9 ' },
-  { sequenceId: 14, text: 'bares ' },
-  { sequenceId: 15, text: 'de ' },
-  { sequenceId: 16, text: 'presión ' },
-  { sequenceId: 17, text: 'durante ' },
-  { sequenceId: 18, text: '26 ' },
-  { sequenceId: 19, text: 'segundos.' },
+  { sequenceId: 1, text: 'Respuesta ' },
+  { sequenceId: 2, text: 'simulada ' },
+  { sequenceId: 3, text: 'del ' },
+  { sequenceId: 4, text: 'asistente ' },
+  { sequenceId: 5, text: 'IA ' },
+  { sequenceId: 6, text: 'para ' },
+  { sequenceId: 7, text: 'la ' },
+  { sequenceId: 8, text: 'infraestructura ' },
+  { sequenceId: 9, text: 'cloud ' },
+  { sequenceId: 10, text: 'de ' },
+  { sequenceId: 11, text: 'la ' },
+  { sequenceId: 12, text: 'empresa.' },
 ];
 
 export class MockStreamingGateway implements StreamingGateway {

@@ -34,7 +34,7 @@ describe('useSendMessage hook', () => {
     const mockReturnMsg = new Message(
       'msg-real-1',
       'user',
-      'Hola, quiero un café',
+      'Calcular presupuesto de infraestructura cloud.',
       new Date(),
       'confirmed'
     );
@@ -45,13 +45,13 @@ describe('useSendMessage hook', () => {
     const { result } = renderHook(() => useSendMessage(conversationId), { wrapper });
 
     await act(async () => {
-      result.current.mutate('Hola, quiero un café');
+      result.current.mutate('Calcular presupuesto de infraestructura cloud.');
     });
 
     expect(sendSpy).toHaveBeenCalledTimes(1);
     const [calledConvId, calledContent, calledKey] = sendSpy.mock.calls[0];
     expect(calledConvId).toBe(conversationId);
-    expect(calledContent).toBe('Hola, quiero un café');
+    expect(calledContent).toBe('Calcular presupuesto de infraestructura cloud.');
     expect(calledKey).toMatch(
       /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
     );

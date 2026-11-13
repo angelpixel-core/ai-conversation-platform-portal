@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { ChatInput } from './ChatInput';
@@ -19,9 +19,11 @@ describe('ChatInput', () => {
     render(<ChatInput onSendMessage={handleSend} />);
 
     const input = screen.getByPlaceholderText(/Escribe tu consulta/i);
-    await user.type(input, '¿Tienen café descafeinado?{Enter}');
+    await act(async () => {
+      await user.type(input, 'Calcular presupuesto de infraestructura cloud.{Enter}');
+    });
 
-    expect(handleSend).toHaveBeenCalledWith('¿Tienen café descafeinado?');
+    expect(handleSend).toHaveBeenCalledWith('Calcular presupuesto de infraestructura cloud.');
     expect(input).toHaveValue('');
   });
 
@@ -33,4 +35,36 @@ describe('ChatInput', () => {
     rerender(<ChatInput onSendMessage={vi.fn()} isSubmitting={true} />);
     expect(submitBtn).toBeDisabled();
   });
+
+  it('renders retry banner when failedPayload is provided and re-submits with same key', async () => {
+    const handleSend = vi.fn();
+    const handleClear = vi.fn();
+    const user = userEvent.setup();
+
+    const failedPayload = {
+      content: 'Mensaje fallido previo',
+      idempotencyKey: 'f059fa8f-6ef0-437f-9e9e-4d41a9ded399',
+    };
+
+    render(
+      <ChatInput
+        onSendMessage={handleSend}
+        failedPayload={failedPayload}
+        onClearFailedPayload={handleClear}
+      />
+    );
+
+    expect(screen.getByText(/Error de red al enviar/i)).toBeInTheDocument();
+    const retryBtn = screen.getByRole('button', { name: /Reintentar con la misma Idempotency-Key/i });
+    await act(async () => {
+      await user.click(retryBtn);
+    });
+
+    expect(handleSend).toHaveBeenCalledWith(
+      'Mensaje fallido previo',
+      'f059fa8f-6ef0-437f-9e9e-4d41a9ded399'
+    );
+    expect(handleClear).toHaveBeenCalled();
+  });
 });
+

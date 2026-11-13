@@ -119,17 +119,17 @@ export class MockKnowledgeGateway implements KnowledgeGateway {
     return [
       new Citation(
         'doc-7819c402-9912-4011-81e0-b7cc99214480',
-        'manual_operaciones_barista.pdf',
+        'manual_arquitectura_cloud.pdf',
         'chunk-4',
         0.93,
-        `Para una extracción óptima de espresso doble, la temperatura del agua en el grupo térmico debe mantenerse estrictamente entre 92°C y 94°C a 9 bares de presión barométrica.`
+        `La política de escalado horizontal para clusters Kubernetes en entornos multi-tenant requiere que el ratio de CPU de los workers se mantenga estrictamente por debajo del 75% de utilización.`
       ),
       new Citation(
         'doc-5128a3f1-4b10-4c8d-81e0-a7bb5001d100',
         'politica_seguridad_2026.pdf',
         'chunk-2',
         0.87,
-        `El acceso a los parámetros de calibración de las máquinas de café en la red IoT corporativa requiere autenticación mTLS y validación de tenant.`
+        `El acceso a los parámetros de gobernanza y control de cuotas en la plataforma corporativa requiere autenticación mTLS y cabecera obligatoria X-Tenant-ID.`
       ),
     ];
   }

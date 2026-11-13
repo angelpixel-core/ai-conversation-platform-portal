@@ -12,18 +12,18 @@ export class MockConversationGateway implements ConversationGatewayPort {
   private idempotencyCache = new Map<string, Message>();
 
   constructor(private readonly simulatedDelayMs: number = typeof window !== 'undefined' ? 900 : 0) {
-    // Seed a default demo conversation for portal testing
+    // Seed a default demo conversation for portal testing matching the backend walkthrough
     const defaultId = 'conv-cloud-1';
     this.conversations.set(
       defaultId,
       new ConversationAggregate(
         ConversationId.create(defaultId),
-        'Consultas Café & Carta',
+        'Enterprise Cloud Migration',
         [
           new Message(
             'msg-welcome',
             'assistant',
-            '¡Hola! Bienvenido al portal de café. ¿En qué puedo ayudarte hoy?',
+            '¡Hola! Bienvenido a la plataforma de IA conversacional. ¿En qué puedo asistirte hoy?',
             new Date(Date.now() - 60000),
             'confirmed'
           ),
@@ -40,12 +40,12 @@ export class MockConversationGateway implements ConversationGatewayPort {
 
     const newConv = new ConversationAggregate(
       ConversationId.create(id),
-      'Nueva Conversación',
+      'Nueva Conversación Corporativa',
       [
         new Message(
           'msg-welcome',
           'assistant',
-          '¡Hola! Bienvenido al portal de café. ¿En qué puedo ayudarte hoy?',
+          '¡Hola! Bienvenido a la plataforma de IA conversacional. ¿En qué puedo asistirte hoy?',
           new Date(),
           'confirmed'
         ),
@@ -64,7 +64,7 @@ export class MockConversationGateway implements ConversationGatewayPort {
       new Message(
         'msg-welcome',
         'assistant',
-        '¡Hola! Nueva conversación creada. ¿En qué puedo ayudarte?',
+        `¡Hola! Conversación "${title}" inicializada exitosamente. ¿En qué puedo asistirte hoy?`,
         new Date(),
         'confirmed'
       ),
@@ -93,14 +93,22 @@ export class MockConversationGateway implements ConversationGatewayPort {
     const userMsg = conv.appendUserMessage(content, key);
     this.idempotencyCache.set(idempotencyKey, userMsg);
 
-    // 3. Simulate conversational bot reply
-    let reply = `Recibido: "${content}". Procesando con motor RAG de cafetería...`;
-    if (content.toLowerCase().includes('almendra') || content.toLowerCase().includes('avena')) {
-      reply = '¡Excelente elección! Disponemos de leche de avena orgánica y almendras por un adicional de $0.50.';
-    } else if (content.toLowerCase().includes('cappuccino') || content.toLowerCase().includes('espresso')) {
-      reply = 'Excelente elección. Nuestro café de especialidad es de origen colombiano con notas a chocolate y avellana.';
-    } else if (content.toLowerCase().includes('pastelería') || content.toLowerCase().includes('medialuna')) {
-      reply = 'Nuestra pastelería recién horneada incluye medialunas de manteca, croissants artesanales y cookies con chips de chocolate.';
+    // 3. Simulate conversational bot reply based on enterprise cloud domain
+    const lower = content.toLowerCase();
+    let reply = `Recibido: "${content}". Procesando con motor de inferencia y Transactional Outbox...`;
+
+    if (lower.includes('presupuesto') || lower.includes('budget') || lower.includes('cloud')) {
+      reply =
+        'El presupuesto estimado para la infraestructura cloud en el período mensual actual es de $1,000.00 USD con un balance disponible de $735.00 USD (Tier PRO).';
+    } else if (lower.includes('seguridad') || lower.includes('política') || lower.includes('security')) {
+      reply =
+        'La política de seguridad multi-tenant exige validación estricta de X-Tenant-ID, cifrado de datos en reposo y evaluación de guardrails contra prompt injection.';
+    } else if (lower.includes('token') || lower.includes('cuota')) {
+      reply =
+        'La cuota asignada es de 8,192 tokens por petición con un límite de 120 peticiones por minuto.';
+    } else if (lower.includes('arquitectura') || lower.includes('multi-tenant')) {
+      reply =
+        'La arquitectura del sistema opera con Clean Architecture y aislamiento de datos por tenant corporativo, desacoplando eventos mediante Transactional Outbox.';
     }
 
     conv.appendAssistantMessage(reply);

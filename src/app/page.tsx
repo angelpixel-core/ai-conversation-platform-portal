@@ -138,7 +138,7 @@ const USE_CASES: ModuleCardProps[] = [
 export default function Home() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
   const { activeTenant } = useTenant();
-  const [activeTab, setActiveTab] = useState<'modules' | 'chat' | 'outbox' | 'governance' | 'approvals' | 'knowledge' | 'streaming' | 'workflows' | 'guardrails'>('guardrails');
+  const [activeTab, setActiveTab] = useState<'modules' | 'chat' | 'outbox' | 'governance' | 'approvals' | 'knowledge' | 'streaming' | 'workflows' | 'guardrails'>('chat');
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FFFDF8]">
@@ -168,7 +168,7 @@ export default function Home() {
             </h1>
 
             <p className="text-base sm:text-lg text-black/80 font-medium leading-relaxed">
-              Consola interactiva para el sistema conversacional corporativo de cafetería. Diseñado
+              Consola interactiva para la plataforma de IA conversacional corporativa. Diseñado
               para validar de extremo a extremo los 10 casos de uso del motor, tanto en modo
               desacoplado (In-Memory Mocks) como contra la API FastAPI en producción.
             </p>

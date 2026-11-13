@@ -15,7 +15,6 @@ export interface AppContainer {
   conversationGateway: ConversationGatewayPort;
 }
 
-const useMocks = process.env.NEXT_PUBLIC_USE_MOCKS === 'true';
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 const liveHealthAdapter = new HttpHealthAdapter(apiBaseUrl);
@@ -23,6 +22,9 @@ const mockHealthGateway = new MockHealthGateway();
 
 const liveTenantAdapter = new HttpTenantAdapter(apiBaseUrl);
 const mockTenantGateway = new MockTenantGateway();
+
+const liveConversationAdapter = new HttpConversationAdapter(apiBaseUrl);
+const mockConversationGateway = new MockConversationGateway();
 
 export const container: AppContainer = {
   healthGateway: {
@@ -41,8 +43,24 @@ export const container: AppContainer = {
       return mode === 'LIVE' ? liveTenantAdapter.createTenant(input) : mockTenantGateway.createTenant(input);
     },
   },
-  conversationGateway: useMocks
-    ? new MockConversationGateway()
-    : new HttpConversationAdapter(apiBaseUrl),
+  conversationGateway: {
+    getConversation: (id: string) => {
+      const mode = runtimeEnvironmentStore.getMode();
+      return mode === 'LIVE'
+        ? liveConversationAdapter.getConversation(id)
+        : mockConversationGateway.getConversation(id);
+    },
+    createConversation: (title: string, idempotencyKey: string) => {
+      const mode = runtimeEnvironmentStore.getMode();
+      return mode === 'LIVE'
+        ? liveConversationAdapter.createConversation(title, idempotencyKey)
+        : mockConversationGateway.createConversation(title, idempotencyKey);
+    },
+    sendMessage: (conversationId: string, content: string, idempotencyKey: string) => {
+      const mode = runtimeEnvironmentStore.getMode();
+      return mode === 'LIVE'
+        ? liveConversationAdapter.sendMessage(conversationId, content, idempotencyKey)
+        : mockConversationGateway.sendMessage(conversationId, content, idempotencyKey);
+    },
+  },
 };
-

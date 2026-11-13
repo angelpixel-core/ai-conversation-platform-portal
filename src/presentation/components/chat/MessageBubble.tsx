@@ -63,6 +63,12 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
           {message.content}
         </p>
 
+        {message.idempotencyKey && (
+          <div className="mt-1.5 flex items-center gap-1 text-[9px] font-mono text-black/70 bg-white/80 border border-black/40 px-1.5 py-0.5 inline-flex w-fit shadow-[1px_1px_0px_#000]">
+            <span className="font-bold">IDEMPOTENCY:</span> {message.idempotencyKey.slice(0, 8)}...
+          </div>
+        )}
+
         {isUser && !isOptimistic && (
           <div className="mt-2.5 flex justify-end">
             <MessageDeliveryStatusBadge

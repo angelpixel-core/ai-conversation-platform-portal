@@ -23,8 +23,15 @@ async function run() {
     console.log('🌐 Navigating to http://localhost:3000...');
     await page.goto('http://localhost:3000', { waitUntil: 'networkidle0', timeout: 30000 });
 
+    // Ensure LIVE mode is active to capture live backend data
+    console.log('⚡ Activating LIVE mode against FastAPI backend...');
+    await page.evaluate(() => {
+      sessionStorage.setItem('chatbot_portal_env_mode', 'LIVE');
+    });
+    await page.reload({ waitUntil: 'networkidle0' });
+
     // Wait until tenant selector button is rendered
-    console.log('⏳ Waiting for Tenant Selector button...');
+    console.log('⏳ Waiting for Tenant Selector button in LIVE mode...');
     await page.waitForFunction(
       () => {
         const btn = document.querySelector('button[aria-label="Seleccionar espacio corporativo"]');

@@ -25,7 +25,7 @@ export const StreamingChatBubble: React.FC<StreamingChatBubbleProps> = ({
           </div>
           <div>
             <span className="font-black text-xs uppercase tracking-tight text-black">
-              Asistente de Barista (IA)
+              Asistente Corporativo (IA)
             </span>
             <span className="ml-2 font-mono text-[10px] text-gray-500 uppercase">
               SSE Stream Channel
