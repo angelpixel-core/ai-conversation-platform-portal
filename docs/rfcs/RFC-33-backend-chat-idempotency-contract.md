@@ -308,3 +308,4 @@ Mensajes confirmados con etiqueta monoespaciada `IDEMPOTENCY: <uuid>` en cada bu
 - [ ] Líder Técnico Frontend
 - [ ] Arquitecto de Software Backend & AI Core
 - [ ] Especialista en Seguridad y Aislamiento Multi-Tenant
+
